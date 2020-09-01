@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:tasks_app/screens/first_page.dart';
+import 'package:tasks_app/screens/task_page.dart';
 import 'package:tasks_app/screens/fourth_page.dart';
 import 'package:tasks_app/screens/second_page.dart';
 import 'package:tasks_app/screens/third_page.dart';
@@ -29,7 +29,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
   List<StatelessWidget> _pages = [
-    FirstPage(),
+    TaskPage(),
     SecondPage(),
     ThirdPage(),
     FourthPage()
@@ -43,9 +43,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    double _height = MediaQuery.of(context).size.height;
-    double _width = MediaQuery.of(context).size.width;
     return Scaffold(
+      backgroundColor: Color(0xFFE5E5E5),
       body: _pages[_selectedIndex],
       floatingActionButton: FloatingActionButton(
         backgroundColor: Color(0xFFFF844C),

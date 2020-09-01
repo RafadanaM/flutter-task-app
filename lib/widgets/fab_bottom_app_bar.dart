@@ -41,7 +41,7 @@ class _FABBottomAppBarState extends State<FABBottomAppBar> {
   /*
   This method will build item of navbar
   @param FABBottomAppBarItem item : item of navbar
-  @param int index : index of the items in navbar
+  @param int index : index of the item in navbar
   @param ValueChanged<int> onPressed : callback function for each item
   @return Expanded widget that can be pressed due to InkWell
    */
