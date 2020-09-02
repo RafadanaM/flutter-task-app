@@ -44,6 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBody: true,
       backgroundColor: Color(0xFFE5E5E5),
       body: _pages[_selectedIndex],
       floatingActionButton: FloatingActionButton(

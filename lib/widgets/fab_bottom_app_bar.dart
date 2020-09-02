@@ -126,6 +126,7 @@ class _FABBottomAppBarState extends State<FABBottomAppBar> {
     //insert the middle empty item
     items.insert(items.length >> 1, _buildMiddleTabItem());
     return BottomAppBar(
+      notchMargin: 7.5,
       shape: widget.notchedShape,
       child: Row(
         mainAxisSize: MainAxisSize.max,
