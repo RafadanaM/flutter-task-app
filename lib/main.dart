@@ -20,9 +20,8 @@ class MyApp extends StatelessWidget {
       initialRoute: MyHomePage.routeName,
       routes: {
         MyHomePage.routeName: (context) => MyHomePage(),
-        TaskDetailScreen.routeName: (context) => MyHomePage()
+        TaskDetailScreen.routeName: (context) => TaskDetailScreen(),
       },
-      home: MyHomePage(),
     );
   }
 }

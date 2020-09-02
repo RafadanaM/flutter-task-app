@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tasks_app/screens/task_detail_screen.dart';
+import 'package:tasks_app/task.dart';
 import 'package:tasks_app/widgets/task_list_tile.dart';
 
 class TaskListView extends StatelessWidget {
@@ -12,6 +13,10 @@ class TaskListView extends StatelessWidget {
         );
       },
       itemBuilder: (context, index) {
+        final Task task = Task(
+            title: "New Title",
+            description: "bla bla bla",
+            date: "6 September 1969");
         return Container(
           height: 85,
           decoration: BoxDecoration(
@@ -22,12 +27,15 @@ class TaskListView extends StatelessWidget {
           ),
           child: Center(
             child: TaskListTile(
-              taskTitle: 'New Title',
-              taskDescription: 'blablablabla',
-              date: '6 September 1969',
-              isChecked: false,
+              taskTitle: task.title,
+              taskDescription: task.description,
+              date: task.date,
+              isChecked: task.isCompleted,
               onChanged: (bool newVal) {},
-              onLongPress: () {},
+              onLongPress: () {
+                Navigator.pushNamed(context, TaskDetailScreen.routeName,
+                    arguments: task);
+              },
             ),
           ),
         );
