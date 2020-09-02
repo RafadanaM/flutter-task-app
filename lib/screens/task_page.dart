@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tasks_app/widgets/task_list_view.dart';
 
 class TaskPage extends StatelessWidget {
+  static const routeName = '/task';
   @override
   Widget build(BuildContext context) {
     double _height = MediaQuery.of(context).size.height;

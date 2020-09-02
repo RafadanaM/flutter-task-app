@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tasks_app/screens/task_detail_screen.dart';
 import 'package:tasks_app/widgets/task_list_tile.dart';
 
 class TaskListView extends StatelessWidget {
@@ -26,6 +27,7 @@ class TaskListView extends StatelessWidget {
               date: '6 September 1969',
               isChecked: false,
               onChanged: (bool newVal) {},
+              onLongPress: () {},
             ),
           ),
         );

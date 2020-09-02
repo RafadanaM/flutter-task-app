@@ -5,6 +5,7 @@ class TaskListTile extends StatelessWidget {
   final String taskDescription;
   final String date;
   final Function onChanged;
+  final Function onLongPress;
   final bool isChecked;
 
   TaskListTile(
@@ -12,7 +13,8 @@ class TaskListTile extends StatelessWidget {
       this.taskDescription,
       this.date,
       this.isChecked,
-      this.onChanged});
+      this.onChanged,
+      this.onLongPress});
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +39,7 @@ class TaskListTile extends StatelessWidget {
           onChanged: onChanged,
         ),
       ),
+      onLongPress: onLongPress,
     );
   }
 }

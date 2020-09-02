@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:tasks_app/screens/task_detail_screen.dart';
 import 'package:tasks_app/screens/task_page.dart';
 import 'package:tasks_app/screens/fourth_page.dart';
 import 'package:tasks_app/screens/second_page.dart';
@@ -16,12 +17,18 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      initialRoute: MyHomePage.routeName,
+      routes: {
+        MyHomePage.routeName: (context) => MyHomePage(),
+        TaskDetailScreen.routeName: (context) => MyHomePage()
+      },
       home: MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
+  static const routeName = '/';
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
