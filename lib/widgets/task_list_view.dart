@@ -7,12 +7,12 @@ class TaskListView extends StatelessWidget {
     return ListView.separated(
       separatorBuilder: (BuildContext context, int index) {
         return SizedBox(
-          height: 10.0,
+          height: 20.0,
         );
       },
       itemBuilder: (context, index) {
         return Container(
-          height: 100,
+          height: 85,
           decoration: BoxDecoration(
             color: Color(0xFF064B41),
             borderRadius: BorderRadius.all(
