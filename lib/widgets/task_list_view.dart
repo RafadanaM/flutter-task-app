@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tasks_app/widgets/task_list_tile.dart';
 
 class TaskListView extends StatelessWidget {
   @override
@@ -19,29 +20,12 @@ class TaskListView extends StatelessWidget {
             ),
           ),
           child: Center(
-            child: ListTile(
-              title: Text(
-                'Task Name',
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold),
-              ),
-              subtitle: Padding(
-                padding: EdgeInsets.symmetric(vertical: 5.0),
-                child: Text(
-                  '6 September 1969',
-                  style: TextStyle(color: Color(0xFF73A99C), fontSize: 13.0),
-                ),
-              ),
-              isThreeLine: true,
-              trailing: Theme(
-                data: ThemeData(unselectedWidgetColor: Color(0xFF73A99C)),
-                child: Checkbox(
-                  value: false,
-                  onChanged: (bool value) {},
-                ),
-              ),
+            child: TaskListTile(
+              taskTitle: 'New Title',
+              taskDescription: 'blablablabla',
+              date: '6 September 1969',
+              isChecked: false,
+              onChanged: (bool newVal) {},
             ),
           ),
         );

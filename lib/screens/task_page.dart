@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:tasks_app/widgets/task_list_view.dart';
 
 class TaskPage extends StatelessWidget {
   @override
@@ -24,7 +25,7 @@ class TaskPage extends StatelessWidget {
               height: _height * 0.025,
             ),
             Expanded(
-              child:
+              child: TaskListView(),
             ),
           ],
         ),
