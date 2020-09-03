@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:tasks_app/models/task_data.dart';
 import 'package:tasks_app/screens/add_task_screen.dart';
 import 'package:tasks_app/screens/task_detail_screen.dart';
 import 'package:tasks_app/screens/task_page.dart';
@@ -16,13 +18,16 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      initialRoute: MyHomePage.routeName,
-      routes: {
-        MyHomePage.routeName: (context) => MyHomePage(),
-        TaskDetailScreen.routeName: (context) => TaskDetailScreen(),
-      },
+    return ChangeNotifierProvider(
+      create: (_) => TaskData(),
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        initialRoute: MyHomePage.routeName,
+        routes: {
+          MyHomePage.routeName: (context) => MyHomePage(),
+          TaskDetailScreen.routeName: (context) => TaskDetailScreen(),
+        },
+      ),
     );
   }
 }
