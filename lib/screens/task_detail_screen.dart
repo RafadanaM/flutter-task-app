@@ -9,7 +9,64 @@ class TaskDetailScreen extends StatelessWidget {
     double _width = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: Color(0xFF064B41),
-      bottomNavigationBar: BottomNavigationBar(),
+      bottomNavigationBar: BottomAppBar(
+        elevation: 0,
+        color: Color(0xFF064B41),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              GestureDetector(
+                onTap: () {
+                  print('edit is pressed');
+                },
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Icon(
+                      Icons.edit,
+                      size: 40,
+                      color: Color(0xFF73A99C),
+                    ),
+                    Text(
+                      'Edit',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Color(0xFF73A99C),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  print('delete is pressed');
+                },
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Icon(
+                      Icons.delete,
+                      size: 40,
+                      color: Color(0xFF73A99C),
+                    ),
+                    Text(
+                      'Delete',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Color(0xFF73A99C),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
       body: Stack(children: <Widget>[
         Container(
           width: _width,
@@ -27,24 +84,23 @@ class TaskDetailScreen extends StatelessWidget {
             padding: EdgeInsets.only(left: 20, top: 15, bottom: 20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
               children: <Widget>[
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Icon(
-                      Icons.arrow_back,
-                      size: 40.0,
-                    ),
-                    SizedBox(
-                      height: _height * (0.225 / 4),
-                    ),
-                    Text(
-                      'Title',
-                      style:
-                          TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-                    )
-                  ],
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Icon(
+                    Icons.arrow_back,
+                    size: 40.0,
+                  ),
+                ),
+                SizedBox(
+                  height: _height * (0.225 / 4),
+                ),
+                Text(
+                  'Title',
+                  style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(
                   height: _height * 0.05,
