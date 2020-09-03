@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tasks_app/models/task.dart';
 
 class TaskDetailScreen extends StatelessWidget {
   static const routeName = '/details';
@@ -7,6 +8,7 @@ class TaskDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     double _height = MediaQuery.of(context).size.height;
     double _width = MediaQuery.of(context).size.width;
+    final Task task = ModalRoute.of(context).settings.arguments;
     return Scaffold(
       backgroundColor: Color(0xFF064B41),
       bottomNavigationBar: BottomAppBar(
@@ -99,14 +101,14 @@ class TaskDetailScreen extends StatelessWidget {
                   height: _height * (0.225 / 4),
                 ),
                 Text(
-                  'Title',
+                  task.title,
                   style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(
                   height: _height * 0.05,
                 ),
                 Text(
-                  'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt',
+                  task.description,
                   style: TextStyle(color: Color(0xFFEFF6F4), fontSize: 18.0),
                 ),
                 SizedBox(
@@ -123,7 +125,7 @@ class TaskDetailScreen extends StatelessWidget {
                       width: _width * 0.05,
                     ),
                     Text(
-                      'September 6',
+                      task.date,
                       style: TextStyle(
                         color: Color(0xFF73A99C),
                         fontSize: 18,
