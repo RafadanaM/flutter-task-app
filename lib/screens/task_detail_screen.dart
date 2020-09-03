@@ -21,17 +21,21 @@ class TaskDetailScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               ClickableIcon(
+                direction: Axis.vertical,
                 iconData: Icons.edit,
                 iconSize: 35,
                 title: 'Edit',
+                itemSpacing: 5.0,
                 onTap: () {
                   print('Edit is pressed');
                 },
               ),
               ClickableIcon(
+                direction: Axis.vertical,
                 iconData: Icons.delete,
                 iconSize: 35,
                 title: 'Delete',
+                itemSpacing: 5.0,
                 onTap: () {
                   print('Delete is pressed');
                 },
@@ -69,14 +73,14 @@ class TaskDetailScreen extends StatelessWidget {
                   ),
                 ),
                 SizedBox(
-                  height: _height * (0.225 / 4),
+                  height: _height * (0.225 / 5),
                 ),
                 Text(
                   task.title,
                   style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(
-                  height: _height * 0.05,
+                  height: _height * 0.075,
                 ),
                 Text(
                   task.description,
@@ -85,46 +89,22 @@ class TaskDetailScreen extends StatelessWidget {
                 SizedBox(
                   height: _height * 0.05,
                 ),
-                Row(
-                  children: <Widget>[
-                    Icon(
-                      Icons.calendar_today,
-                      size: 40.0,
-                      color: Color(0xFF73A99C),
-                    ),
-                    SizedBox(
-                      width: _width * 0.05,
-                    ),
-                    Text(
-                      task.date,
-                      style: TextStyle(
-                        color: Color(0xFF73A99C),
-                        fontSize: 18,
-                      ),
-                    ),
-                  ],
+                ClickableIcon(
+                  direction: Axis.horizontal,
+                  iconData: Icons.calendar_today,
+                  iconSize: 40,
+                  title: task.date,
+                  itemSpacing: _width * 0.05,
                 ),
                 SizedBox(
                   height: _height * 0.025,
                 ),
-                Row(
-                  children: <Widget>[
-                    Icon(
-                      Icons.notifications,
-                      size: 40.0,
-                      color: Color(0xFF73A99C),
-                    ),
-                    SizedBox(
-                      width: _width * 0.05,
-                    ),
-                    Text(
-                      'Sept 6, 8:30 pm',
-                      style: TextStyle(
-                        color: Color(0xFF73A99C),
-                        fontSize: 18,
-                      ),
-                    ),
-                  ],
+                ClickableIcon(
+                  direction: Axis.horizontal,
+                  iconData: Icons.notifications,
+                  iconSize: 40,
+                  title: 'Sept 6, 8:30 pm',
+                  itemSpacing: _width * 0.05,
                 ),
               ],
             ),
