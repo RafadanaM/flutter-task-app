@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tasks_app/models/task.dart';
+import 'package:tasks_app/widgets/clickable_icon.dart';
 
 class TaskDetailScreen extends StatelessWidget {
   static const routeName = '/details';
@@ -19,51 +20,21 @@ class TaskDetailScreen extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              GestureDetector(
+              ClickableIcon(
+                iconData: Icons.edit,
+                iconSize: 35,
+                title: 'Edit',
                 onTap: () {
-                  print('edit is pressed');
+                  print('Edit is pressed');
                 },
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Icon(
-                      Icons.edit,
-                      size: 40,
-                      color: Color(0xFF73A99C),
-                    ),
-                    Text(
-                      'Edit',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Color(0xFF73A99C),
-                      ),
-                    ),
-                  ],
-                ),
               ),
-              GestureDetector(
+              ClickableIcon(
+                iconData: Icons.delete,
+                iconSize: 35,
+                title: 'Delete',
                 onTap: () {
-                  print('delete is pressed');
+                  print('Delete is pressed');
                 },
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Icon(
-                      Icons.delete,
-                      size: 40,
-                      color: Color(0xFF73A99C),
-                    ),
-                    Text(
-                      'Delete',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Color(0xFF73A99C),
-                      ),
-                    ),
-                  ],
-                ),
               ),
             ],
           ),
