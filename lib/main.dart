@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:tasks_app/screens/add_task_screen.dart';
 import 'package:tasks_app/screens/task_detail_screen.dart';
 import 'package:tasks_app/screens/task_page.dart';
 import 'package:tasks_app/screens/fourth_page.dart';
@@ -55,7 +56,23 @@ class _MyHomePageState extends State<MyHomePage> {
       body: _pages[_selectedIndex],
       floatingActionButton: FloatingActionButton(
         backgroundColor: Color(0xFFFF844C),
-        onPressed: () {},
+        onPressed: () {
+          showModalBottomSheet(
+              context: context,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20.0),
+                  topRight: Radius.circular(20.0),
+                ),
+              ),
+              builder: (context) => SingleChildScrollView(
+                    child: Container(
+                      padding: EdgeInsets.only(
+                          bottom: MediaQuery.of(context).viewInsets.bottom),
+                      child: AddTaskScreen(),
+                    ),
+                  ));
+        },
         child: Icon(
           Icons.add,
           size: 50.0,
