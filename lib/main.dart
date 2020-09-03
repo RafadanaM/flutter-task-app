@@ -1,6 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:tasks_app/screens/first_page.dart';
+import 'package:provider/provider.dart';
+import 'package:tasks_app/models/task_data.dart';
+import 'package:tasks_app/screens/add_task_screen.dart';
+import 'package:tasks_app/screens/task_detail_screen.dart';
+import 'package:tasks_app/screens/task_page.dart';
 import 'package:tasks_app/screens/fourth_page.dart';
 import 'package:tasks_app/screens/second_page.dart';
 import 'package:tasks_app/screens/third_page.dart';
@@ -14,14 +18,22 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      home: MyHomePage(),
+    return ChangeNotifierProvider(
+      create: (_) => TaskData(),
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        initialRoute: MyHomePage.routeName,
+        routes: {
+          MyHomePage.routeName: (context) => MyHomePage(),
+          TaskDetailScreen.routeName: (context) => TaskDetailScreen(),
+        },
+      ),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
+  static const routeName = '/';
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
@@ -29,7 +41,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
   List<StatelessWidget> _pages = [
-    FirstPage(),
+    TaskPage(),
     SecondPage(),
     ThirdPage(),
     FourthPage()
@@ -43,13 +55,29 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    double _height = MediaQuery.of(context).size.height;
-    double _width = MediaQuery.of(context).size.width;
     return Scaffold(
+      extendBody: true,
+      backgroundColor: Color(0xFFE5E5E5),
       body: _pages[_selectedIndex],
       floatingActionButton: FloatingActionButton(
         backgroundColor: Color(0xFFFF844C),
-        onPressed: () {},
+        onPressed: () {
+          showModalBottomSheet(
+              context: context,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20.0),
+                  topRight: Radius.circular(20.0),
+                ),
+              ),
+              builder: (context) => SingleChildScrollView(
+                    child: Container(
+                      padding: EdgeInsets.only(
+                          bottom: MediaQuery.of(context).viewInsets.bottom),
+                      child: AddTaskScreen(),
+                    ),
+                  ));
+        },
         child: Icon(
           Icons.add,
           size: 50.0,
