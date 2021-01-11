@@ -9,7 +9,6 @@ class SecondPage extends StatelessWidget {
       body: Center(
         child: Text('Second Page'),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }
