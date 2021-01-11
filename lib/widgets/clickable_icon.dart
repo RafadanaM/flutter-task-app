@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class ClickableIcon extends StatelessWidget {
   final IconData iconData;
   final double iconSize;
+  final double titleSize;
   final double itemSpacing;
   final String title;
   final Function onTap;
@@ -12,6 +13,7 @@ class ClickableIcon extends StatelessWidget {
       {@required this.direction,
       this.iconData,
       this.title,
+      this.titleSize,
       this.iconSize,
       this.onTap,
       this.itemSpacing});
@@ -37,7 +39,7 @@ class ClickableIcon extends StatelessWidget {
           Text(
             title,
             style: TextStyle(
-              fontSize: 16,
+              fontSize: titleSize,
               color: Color(0xFF73A99C),
             ),
           ),

@@ -26,6 +26,7 @@ class MyApp extends StatelessWidget {
         routes: {
           MyHomePage.routeName: (context) => MyHomePage(),
           TaskDetailScreen.routeName: (context) => TaskDetailScreen(),
+          AddTaskScreen.routeName: (context) => AddTaskScreen(),
         },
       ),
     );
@@ -62,21 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Color(0xFFFF844C),
         onPressed: () {
-          showModalBottomSheet(
-              context: context,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20.0),
-                  topRight: Radius.circular(20.0),
-                ),
-              ),
-              builder: (context) => SingleChildScrollView(
-                    child: Container(
-                      padding: EdgeInsets.only(
-                          bottom: MediaQuery.of(context).viewInsets.bottom),
-                      child: AddTaskScreen(),
-                    ),
-                  ));
+          Navigator.pushNamed(context, AddTaskScreen.routeName);
         },
         child: Icon(
           Icons.add,

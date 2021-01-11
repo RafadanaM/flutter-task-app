@@ -32,6 +32,7 @@ class TaskListTile extends StatelessWidget {
         ),
       ),
       isThreeLine: true,
+      onLongPress: onLongPress,
       trailing: Theme(
         data: ThemeData(unselectedWidgetColor: Color(0xFF73A99C)),
         child: Checkbox(
@@ -39,7 +40,6 @@ class TaskListTile extends StatelessWidget {
           onChanged: onChanged,
         ),
       ),
-      onLongPress: onLongPress,
     );
   }
 }

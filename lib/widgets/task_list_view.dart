@@ -3,12 +3,18 @@ import 'package:tasks_app/models/task_data.dart';
 import 'package:tasks_app/screens/task_detail_screen.dart';
 import 'package:tasks_app/widgets/task_list_tile.dart';
 import 'package:provider/provider.dart';
+import 'package:tasks_app/models/task.dart';
 
-class TaskListView extends StatelessWidget {
+class TaskListView extends StatefulWidget {
+  @override
+  _TaskListViewState createState() => _TaskListViewState();
+}
+
+class _TaskListViewState extends State<TaskListView> {
   @override
   Widget build(BuildContext context) {
     return Consumer<TaskData>(
-      builder: (_, taskData, child) {
+      builder: (context, taskData, child) {
         return ListView.separated(
           separatorBuilder: (BuildContext context, int index) {
             return SizedBox(
@@ -31,7 +37,9 @@ class TaskListView extends StatelessWidget {
                   date: taskData.tasks[index].date,
                   isChecked: taskData.tasks[index].isCompleted,
                   onChanged: (bool newVal) {
-                    taskData.updateTask(taskData.tasks[index]);
+                    setState(() {
+                      taskData.tasks[index].toggleCompleted();
+                    });
                   },
                   onLongPress: () {
                     Navigator.pushNamed(context, TaskDetailScreen.routeName,
@@ -41,7 +49,7 @@ class TaskListView extends StatelessWidget {
               ),
             );
           },
-          itemCount: taskData.taskCount,
+          itemCount: taskData.tasks.length,
         );
       },
     );
