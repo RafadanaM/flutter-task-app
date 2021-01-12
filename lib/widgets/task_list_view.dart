@@ -41,7 +41,7 @@ class _TaskListViewState extends State<TaskListView> {
                       taskData.tasks[index].toggleCompleted();
                     });
                   },
-                  onLongPress: () {
+                  onTap: () {
                     Navigator.pushNamed(context, TaskDetailScreen.routeName,
                         arguments: taskData.tasks[index]);
                   },

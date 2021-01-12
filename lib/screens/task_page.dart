@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:tasks_app/widgets/task_list_view.dart';
+import 'package:tasks_app/config/styles.dart';
 
 class TaskPage extends StatelessWidget {
   static const routeName = '/task';
@@ -9,6 +10,7 @@ class TaskPage extends StatelessWidget {
     double _height = MediaQuery.of(context).size.height;
     double _width = MediaQuery.of(context).size.width;
     return Scaffold(
+      backgroundColor: backgroundPrimary,
       body: Padding(
         padding: EdgeInsets.only(
             top: _height * 0.075, left: _width * 0.05, right: _width * 0.05),

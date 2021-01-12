@@ -71,12 +71,12 @@ class AddTaskScreen extends StatelessWidget {
                 ),
                 Padding(
                   padding:
-                      EdgeInsets.only(left: 20, top: 30, bottom: 20, right: 20),
+                      EdgeInsets.all(20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       TextField(
-                        minLines: 6,
+                        minLines: 2,
                         maxLines: 6,
                         style: TextStyle(
                             color: Color(0xFF73A99C),
@@ -84,19 +84,18 @@ class AddTaskScreen extends StatelessWidget {
                             fontSize: 18.0),
                         cursorColor: Colors.grey,
                         decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Color(0xFF73A99C), width: 1.0),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Color(0xFF73A99C), width: 1.0),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
+                          border: InputBorder.none,
+                          // enabledBorder: OutlineInputBorder(
+                          //   borderSide: BorderSide(
+                          //       color: Color(0xFF73A99C), width: 1.0),
+                          //   borderRadius: BorderRadius.circular(5),
+                          // ),
+                          // focusedBorder: OutlineInputBorder(
+                          //   borderSide: BorderSide(
+                          //       color: Color(0xFF73A99C), width: 1.0),
+                          //   borderRadius: BorderRadius.circular(5),
+                          // ),
+
                           hintText: 'Description',
                           hintStyle: TextStyle(
                               color: Color(0xFF73A99C),
@@ -107,9 +106,10 @@ class AddTaskScreen extends StatelessWidget {
                           _description = newDescription;
                         },
                       ),
-                      SizedBox(
-                        height: _height * 0.05,
-                      ),
+                      // SizedBox(
+                      //   height: _height * 0.025,
+                      // ),
+
                       ClickableIcon(
                         direction: Axis.horizontal,
                         iconData: Icons.calendar_today,
@@ -118,9 +118,9 @@ class AddTaskScreen extends StatelessWidget {
                         titleSize: 18.0,
                         itemSpacing: 20.0,
                       ),
-                      SizedBox(
-                        height: _height * 0.05,
-                      ),
+                      // SizedBox(
+                      //   height: _height * 0.05,
+                      // ),
                       ClickableIcon(
                         direction: Axis.horizontal,
                         iconData: Icons.notifications,
