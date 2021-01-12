@@ -95,6 +95,7 @@ class AddTaskScreen extends StatelessWidget {
                           //       color: Color(0xFF73A99C), width: 1.0),
                           //   borderRadius: BorderRadius.circular(5),
                           // ),
+
                           hintText: 'Description',
                           hintStyle: TextStyle(
                               color: Color(0xFF73A99C),
@@ -108,6 +109,7 @@ class AddTaskScreen extends StatelessWidget {
                       // SizedBox(
                       //   height: _height * 0.025,
                       // ),
+
                       ClickableIcon(
                         direction: Axis.horizontal,
                         iconData: Icons.calendar_today,
