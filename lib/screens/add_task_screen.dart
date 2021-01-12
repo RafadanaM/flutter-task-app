@@ -2,15 +2,32 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tasks_app/widgets/clickable_icon.dart';
 
-class AddTaskScreen extends StatelessWidget {
+class AddTaskScreen extends StatefulWidget {
   static const routeName = '/add';
+
+  @override
+  _AddTaskScreenState createState() => _AddTaskScreenState();
+}
+
+class _AddTaskScreenState extends State<AddTaskScreen> {
+  DateTime _pickedDate;
+  TimeOfDay _pickedTime;
+  String _title;
+  String _description;
+  String _dueDate = "Due Date";
+
+  @override
+  void initState() {
+    super.initState();
+    _pickedDate = DateTime.now();
+    _pickedTime = TimeOfDay.now();
+  }
 
   @override
   Widget build(BuildContext context) {
     double _height = MediaQuery.of(context).size.height;
     double _width = MediaQuery.of(context).size.width;
-    String _title;
-    String _description;
+
     return Scaffold(
       backgroundColor: Color(0xFF064B41),
       body: Stack(
@@ -70,8 +87,7 @@ class AddTaskScreen extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding:
-                      EdgeInsets.all(20),
+                  padding: EdgeInsets.all(20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
@@ -85,16 +101,6 @@ class AddTaskScreen extends StatelessWidget {
                         cursorColor: Colors.grey,
                         decoration: InputDecoration(
                           border: InputBorder.none,
-                          // enabledBorder: OutlineInputBorder(
-                          //   borderSide: BorderSide(
-                          //       color: Color(0xFF73A99C), width: 1.0),
-                          //   borderRadius: BorderRadius.circular(5),
-                          // ),
-                          // focusedBorder: OutlineInputBorder(
-                          //   borderSide: BorderSide(
-                          //       color: Color(0xFF73A99C), width: 1.0),
-                          //   borderRadius: BorderRadius.circular(5),
-                          // ),
                           hintText: 'Description',
                           hintStyle: TextStyle(
                               color: Color(0xFF73A99C),
@@ -112,9 +118,13 @@ class AddTaskScreen extends StatelessWidget {
                         direction: Axis.horizontal,
                         iconData: Icons.calendar_today,
                         iconSize: 40,
-                        title: 'Due Date',
+                        title:
+                            "${_pickedDate.day}/${_pickedDate.month}/${_pickedDate.year} ${_pickedTime.hour}:${_pickedTime.minute}",
                         titleSize: 18.0,
                         itemSpacing: 20.0,
+                        onTap: () {
+                          _pickDate();
+                        },
                       ),
                       // SizedBox(
                       //   height: _height * 0.05,
@@ -142,12 +152,43 @@ class AddTaskScreen extends StatelessWidget {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
-              onPressed: () {},
+              onPressed: () {
+                print("===================");
+                print(_title);
+                print(_description);
+              },
               child: Text('Save'),
             ),
           )
         ],
       ),
     );
+  }
+
+  _pickDate() async {
+    DateTime date = await showDatePicker(
+      context: context,
+      initialDate: _pickedDate,
+      firstDate: DateTime.now(),
+      lastDate: DateTime(DateTime.now().year + 5),
+    );
+    if (date != null) {
+      setState(() {
+        _pickedDate = date;
+      });
+      _pickTime();
+    }
+  }
+
+  _pickTime() async {
+    TimeOfDay time = await showTimePicker(
+      context: context,
+      initialTime: _pickedTime,
+    );
+    if (time != null) {
+      setState(() {
+        _pickedTime = time;
+      });
+    }
   }
 }
