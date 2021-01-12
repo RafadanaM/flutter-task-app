@@ -5,7 +5,7 @@ class TaskListTile extends StatelessWidget {
   final String taskDescription;
   final String date;
   final Function onChanged;
-  final Function onLongPress;
+  final Function onTap;
   final bool isChecked;
 
   TaskListTile(
@@ -14,7 +14,7 @@ class TaskListTile extends StatelessWidget {
       this.date,
       this.isChecked,
       this.onChanged,
-      this.onLongPress});
+      this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +32,7 @@ class TaskListTile extends StatelessWidget {
         ),
       ),
       isThreeLine: true,
-      onLongPress: onLongPress,
+      onTap: onTap,
       trailing: Theme(
         data: ThemeData(unselectedWidgetColor: Color(0xFF73A99C)),
         child: Checkbox(

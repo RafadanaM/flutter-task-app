@@ -20,30 +20,33 @@ class ClickableIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Flex(
-        direction: direction,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Icon(
-            iconData,
-            size: iconSize,
-            color: Color(0xFF73A99C),
-          ),
-          SizedBox(
-            width: direction == Axis.horizontal ? itemSpacing : null,
-            height: direction == Axis.vertical ? itemSpacing : null,
-          ),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: titleSize,
+    return Container(
+      margin: EdgeInsets.only(bottom: 12),
+      child: GestureDetector(
+        onTap: onTap,
+        child: Flex(
+          direction: direction,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Icon(
+              iconData,
+              size: iconSize,
               color: Color(0xFF73A99C),
             ),
-          ),
-        ],
+            SizedBox(
+              width: direction == Axis.horizontal ? itemSpacing : null,
+              height: direction == Axis.vertical ? itemSpacing : null,
+            ),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: titleSize,
+                color: Color(0xFF73A99C),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
