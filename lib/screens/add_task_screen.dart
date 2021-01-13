@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tasks_app/widgets/clickable_icon.dart';
+import 'package:flutter_material_pickers/flutter_material_pickers.dart';
 
 class AddTaskScreen extends StatefulWidget {
   static const routeName = '/add';
@@ -10,11 +11,14 @@ class AddTaskScreen extends StatefulWidget {
 }
 
 class _AddTaskScreenState extends State<AddTaskScreen> {
+  String stateText;
   DateTime _pickedDate;
   TimeOfDay _pickedTime;
   String _title;
   String _description;
-  String _dueDate = "Due Date";
+  int _reminder;
+  double _height;
+  double _width;
 
   @override
   void initState() {
@@ -25,8 +29,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double _height = MediaQuery.of(context).size.height;
-    double _width = MediaQuery.of(context).size.width;
+    _height = MediaQuery.of(context).size.height;
+    _width = MediaQuery.of(context).size.width;
 
     return Scaffold(
       backgroundColor: Color(0xFF064B41),
@@ -123,7 +127,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                         titleSize: 18.0,
                         itemSpacing: 20.0,
                         onTap: () {
-                          _pickDate();
+                          _pickDateTime();
                         },
                       ),
                       // SizedBox(
@@ -136,6 +140,9 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                         title: 'Reminder',
                         titleSize: 18.0,
                         itemSpacing: 20.0,
+                        onTap: () {
+                          _dropDown();
+                        },
                       ),
                     ],
                   ),
@@ -165,7 +172,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     );
   }
 
-  _pickDate() async {
+  _pickDateTime() async {
     DateTime date = await showDatePicker(
       context: context,
       initialDate: _pickedDate,
@@ -176,19 +183,46 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
       setState(() {
         _pickedDate = date;
       });
-      _pickTime();
+      TimeOfDay time = await showTimePicker(
+        context: context,
+        initialTime: _pickedTime,
+      );
+      DateTime currentDateTime = DateTime.now();
+      if (time != null) {
+        DateTime inputDateTime = DateTime(_pickedDate.year, _pickedDate.month,
+            _pickedDate.day, time.hour, time.minute);
+        if (inputDateTime.isAfter(currentDateTime))
+          setState(() {
+            _pickedTime = time;
+          });
+      }
     }
   }
 
-  _pickTime() async {
-    TimeOfDay time = await showTimePicker(
+  // _pickTime() async {
+  //   TimeOfDay time = await showTimePicker(
+  //     context: context,
+  //     initialTime: _pickedTime,
+  //   );
+  //   DateTime currentDateTime = DateTime.now();
+  //   DateTime inputDateTime = date
+  //   if (time != null) {
+  //     if()
+  //     setState(() {
+  //       _pickedTime = time;
+  //     });
+  //   }
+  // }
+
+  _dropDown() {
+    return showMaterialNumberPicker(
       context: context,
-      initialTime: _pickedTime,
+      title: "Pick a number",
+      minNumber: 5,
+      maxNumber: 30,
+      step: 5,
+      selectedNumber: _reminder,
+      onChanged: (value) => setState(() => _reminder = value),
     );
-    if (time != null) {
-      setState(() {
-        _pickedTime = time;
-      });
-    }
   }
 }
