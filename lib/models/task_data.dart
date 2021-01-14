@@ -14,7 +14,27 @@ class TaskData extends ChangeNotifier {
     Task(
         title: "new Title3",
         description: "A description",
-        date: "6 September 1969")
+        date: "6 September 1969"),
+    Task(
+        title: "new Title3",
+        description: "A description",
+        date: "6 September 1969"),
+    Task(
+        title: "new Title3",
+        description: "A description",
+        date: "6 September 1969"),
+    Task(
+        title: "new Title3",
+        description: "A description",
+        date: "6 September 1969"),
+    Task(
+        title: "new Title3",
+        description: "A description",
+        date: "6 September 1969"),
+    Task(
+        title: "new Title3",
+        description: "A description",
+        date: "6 September 1969"),
   ];
 
   int get taskCount {

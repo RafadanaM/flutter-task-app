@@ -59,7 +59,10 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       extendBody: true,
       backgroundColor: Color(0xFFE5E5E5),
-      body: _pages[_selectedIndex],
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: _pages,
+      ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Color(0xFFFF844C),
         onPressed: () {

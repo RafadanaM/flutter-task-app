@@ -113,10 +113,10 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                         minLines: 2,
                         maxLines: 6,
                         style: TextStyle(
-                            color: Color(0xFF73A99C),
+                            color: Colors.white,
                             fontWeight: FontWeight.bold,
                             fontSize: 18.0),
-                        cursorColor: Colors.white,
+                        cursorColor: Colors.grey,
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           hintText: 'Description',
@@ -183,6 +183,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                     print("===================");
                     print(_title);
                     print(_description);
+                    _submit();
                   },
                   child: Text('Save'),
                 ),
@@ -259,4 +260,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     DateTime reminder = _inputDateTime.subtract(Duration(minutes: _reminder));
     return formatter.format(reminder);
   }
+
+  // TODO make sure that Title exists and check for input time against current time
+  _submit() {}
 }
