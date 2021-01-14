@@ -20,6 +20,7 @@ class ClickableIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Container(
       margin: EdgeInsets.only(bottom: 12),
       child: GestureDetector(

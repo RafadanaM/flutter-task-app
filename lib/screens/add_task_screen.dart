@@ -132,6 +132,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                       // SizedBox(
                       //   height: _height * 0.025,
                       // ),
+
                       ClickableIcon(
                         direction: Axis.horizontal,
                         iconData: Icons.calendar_today,
