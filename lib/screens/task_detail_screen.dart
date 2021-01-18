@@ -93,7 +93,7 @@ class TaskDetailScreen extends StatelessWidget {
                   direction: Axis.horizontal,
                   iconData: Icons.calendar_today,
                   iconSize: 40,
-                  title: task.date,
+                  title: task.date.toString(),
                   itemSpacing: _width * 0.05,
                 ),
                 SizedBox(
