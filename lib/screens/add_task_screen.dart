@@ -16,11 +16,12 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   DateTime _pickedDate;
   DateTime _inputDateTime;
   TimeOfDay _pickedTime;
-  String _title;
+  String _title = "";
   String _description;
   int _reminder;
   double _height;
   double _width;
+  bool _isAllowed = false;
   List<String> _minutes;
   final DateFormat formatter = DateFormat('MMM dd, HH:mm');
 
@@ -98,6 +99,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                           ),
                           onChanged: (String newTitle) {
                             _title = newTitle;
+                            _checkTitle(newTitle);
                           },
                         ),
                       ],
@@ -175,17 +177,20 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 height: 41,
                 child: RaisedButton(
                   color: Color(0xFFFF844C),
+                  disabledColor: Colors.grey[400],
                   textColor: Colors.white,
                   elevation: 10,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  onPressed: () {
-                    print("===================");
-                    print(_title);
-                    print(_description);
-                    _submit();
-                  },
+                  onPressed: _isAllowed
+                      ? () {
+                          print("===================");
+                          print(_title);
+                          print(_description);
+                          _submit();
+                        }
+                      : null,
                   child: Text('Save'),
                 ),
               ),
@@ -194,6 +199,19 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
         ],
       ),
     );
+  }
+
+  _checkTitle(String title) {
+    print(title);
+    if (title.isNotEmpty) {
+      setState(() {
+        _isAllowed = true;
+      });
+    } else {
+      setState(() {
+        _isAllowed = false;
+      });
+    }
   }
 
   _pickDateTime() async {
@@ -206,6 +224,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     if (date != null) {
       setState(() {
         _pickedDate = date;
+        print(date);
       });
       TimeOfDay time = await showTimePicker(
         context: context,
