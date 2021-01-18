@@ -121,6 +121,18 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                         cursorColor: Colors.grey,
                         decoration: InputDecoration(
                           border: InputBorder.none,
+
+                          // enabledBorder: OutlineInputBorder(
+                          //   borderSide: BorderSide(
+                          //       color: Color(0xFF73A99C), width: 1.0),
+                          //   borderRadius: BorderRadius.circular(5),
+                          // ),
+                          // focusedBorder: OutlineInputBorder(
+                          //   borderSide: BorderSide(
+                          //       color: Color(0xFF73A99C), width: 1.0),
+                          //   borderRadius: BorderRadius.circular(5),
+                          // ),
+
                           hintText: 'Description',
                           hintStyle: TextStyle(
                               color: Color(0xFF73A99C),
