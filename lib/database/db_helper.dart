@@ -1,15 +1,17 @@
+
 import 'dart:async';
 import 'dart:io';
-import 'package:flutter/cupertino.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:tasks_app/models/task.dart';
+
 
 class DBHelper extends ChangeNotifier {
   static final _databaseName = 'TaskDatabase.db';
   static final _databaseVersion = 1;
 
   DBHelper();
+
 
   // only have a single app-wide reference to the database
   static Database _database;
@@ -39,11 +41,14 @@ class DBHelper extends ChangeNotifier {
     await db.insert('tasks', task.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
     notifyListeners();
+
   }
 
   //delete from database
   Future<void> deleteTask(int id) async {
+
     final Database db = await database;
+
 
     await db.delete(
       'tasks',
@@ -51,12 +56,14 @@ class DBHelper extends ChangeNotifier {
       whereArgs: [id],
     );
     notifyListeners();
+
   }
 
   //get from database
 
   Future<List<Task>> tasks() async {
     final Database db = await database;
+
     final List<Map<String, dynamic>> maps = await db.query('tasks');
     print(maps);
     return List.generate(maps.length, (index) {

@@ -303,6 +303,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
         date: _inputDateTime,
         reminder: _reminder);
     Provider.of<DBHelper>(context, listen: false).insertTask(newTask);
+
     Navigator.pop(context);
   }
 }

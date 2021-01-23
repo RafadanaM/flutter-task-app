@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 import 'package:tasks_app/database/db_helper.dart';
 import 'package:tasks_app/models/task.dart';
+
 import 'package:tasks_app/models/task_data.dart';
 import 'package:tasks_app/screens/task_detail_screen.dart';
 import 'package:tasks_app/widgets/task_list_tile.dart';
@@ -70,6 +72,7 @@ class TaskListView extends StatelessWidget {
                 child: CircularProgressIndicator(),
               );
             });
+
       },
     );
   }
