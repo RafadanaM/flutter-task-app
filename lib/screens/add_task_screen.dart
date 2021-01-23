@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:tasks_app/models/task_data.dart';
 import 'package:tasks_app/widgets/clickable_icon.dart';
 import 'package:flutter_material_pickers/flutter_material_pickers.dart';
 import 'package:intl/intl.dart';
@@ -17,8 +19,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   DateTime _inputDateTime;
   TimeOfDay _pickedTime;
   String _title = "";
-  String _description;
-  int _reminder;
+  String _description = "";
+  DateTime _reminder;
   double _height;
   double _width;
   bool _isAllowed = false;
@@ -38,7 +40,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     ];
     _pickedDate = DateTime.now();
     _pickedTime = TimeOfDay.now();
-    _reminder = 0;
+    _reminder = null;
     _inputDateTime = DateTime(_pickedDate.year, _pickedDate.month,
         _pickedDate.day, _pickedTime.hour, _pickedTime.minute);
   }
@@ -121,18 +123,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                         cursorColor: Colors.grey,
                         decoration: InputDecoration(
                           border: InputBorder.none,
-
-                          // enabledBorder: OutlineInputBorder(
-                          //   borderSide: BorderSide(
-                          //       color: Color(0xFF73A99C), width: 1.0),
-                          //   borderRadius: BorderRadius.circular(5),
-                          // ),
-                          // focusedBorder: OutlineInputBorder(
-                          //   borderSide: BorderSide(
-                          //       color: Color(0xFF73A99C), width: 1.0),
-                          //   borderRadius: BorderRadius.circular(5),
-                          // ),
-
                           hintText: 'Description',
                           hintStyle: TextStyle(
                               color: Color(0xFF73A99C),
@@ -166,7 +156,9 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                         direction: Axis.horizontal,
                         iconData: Icons.notifications,
                         iconSize: 40,
-                        title: _reminder == 0 ? 'Reminder' : _calcReminder(),
+                        title: _reminder == null
+                            ? 'Reminder'
+                            : formatter.format(_reminder),
                         titleSize: 18.0,
                         itemSpacing: 20.0,
                         onTap: () {
@@ -200,6 +192,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                           print("===================");
                           print(_title);
                           print(_description);
+                          print(_inputDateTime);
+                          print(_reminder);
                           _submit();
                         }
                       : null,
@@ -249,6 +243,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
         if (_inputDateTime.isAfter(currentDateTime))
           setState(() {
             _pickedTime = time;
+            _reminder = null;
           });
       }
     }
@@ -281,18 +276,27 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
           List<String> split = value.split(" ");
           int time = int.parse(split[0]);
           if (DateTime.now()
-              .isBefore(_inputDateTime.subtract(Duration(minutes: time))))
+              .isBefore(_inputDateTime.subtract(Duration(minutes: time)))) {
             setState(() {
-              _reminder = time;
+              _reminder = _inputDateTime.subtract(Duration(minutes: time));
             });
+          } else {
+            setState(() {
+              _reminder = null;
+            });
+          }
         });
   }
 
-  _calcReminder() {
-    DateTime reminder = _inputDateTime.subtract(Duration(minutes: _reminder));
-    return formatter.format(reminder);
-  }
+  // _calcReminder() {
+  //   DateTime reminder = _inputDateTime.subtract(Duration(minutes: _reminder));
+  //   return formatter.format(reminder);
+  // }
 
   // TODO make sure that Title exists and check for input time against current time
-  _submit() {}
+  _submit() {
+    Provider.of<TaskData>(context, listen: false)
+        .addTask(_title, _description, _inputDateTime, _reminder);
+    Navigator.pop(context);
+  }
 }

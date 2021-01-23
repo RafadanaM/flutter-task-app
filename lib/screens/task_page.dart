@@ -11,8 +11,8 @@ class TaskPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: backgroundPrimary,
       body: Padding(
-        padding: EdgeInsets.symmetric(
-            vertical: _height * 0.075, horizontal: _width * 0.025),
+        padding: EdgeInsets.only(
+            top: _height * 0.075, left: _width * 0.025, right: _width * 0.025),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[

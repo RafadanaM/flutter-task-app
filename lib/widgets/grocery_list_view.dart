@@ -20,34 +20,50 @@ class _GroceryListViewState extends State<GroceryListView> {
               width: MediaQuery.of(context).size.width * 0.85,
             );
           },
+          // itemBuilder: (context, index) {
+          //   return Container(
+          //     height: 50,
+          //     child: Center(
+          //       child: ListTile(
+          //         title: Text(
+          //           taskTitle,
+          //           style: TextStyle(
+          //             color: Colors.white,
+          //             fontSize: 24,
+          //             fontWeight: FontWeight.bold,
+          //           ),
+          //         ),
+          //         subtitle: Padding(
+          //           padding: EdgeInsets.symmetric(vertical: 5.0),
+          //           child: Text(
+          //             date,
+          //             style:
+          //                 TextStyle(color: Color(0xFF73A99C), fontSize: 13.0),
+          //           ),
+          //         ),
+          //         isThreeLine: true,
+          //         onTap: onTap,
+          //         trailing: Theme(
+          //           data: ThemeData(unselectedWidgetColor: Color(0xFF73A99C)),
+          //           child: Checkbox(
+          //             value: isChecked,
+          //             onChanged: onChanged,
+          //           ),
+          //         ),
+          //       ),
+          //     ),
+          //   );
           itemBuilder: (context, index) {
             return Container(
-              height: 85,
-              decoration: BoxDecoration(
-                color: Color(0xFF064B41),
-                borderRadius: BorderRadius.all(
-                  Radius.circular(15.0),
-                ),
-              ),
+              height: 50,
               child: Center(
                 child: ListTile(
-                  title: Padding(
-                    padding: const EdgeInsets.only(top: 5.0),
-                    child: Text(
-                      taskTitle,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  subtitle: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 5.0),
-                    child: Text(
-                      date,
-                      style:
-                          TextStyle(color: Color(0xFF73A99C), fontSize: 13.0),
+                  title: Text(
+                    taskTitle,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                   isThreeLine: true,
@@ -63,7 +79,7 @@ class _GroceryListViewState extends State<GroceryListView> {
               ),
             );
           },
-          itemCount: taskData.tasks.length,
+          // itemCount: taskData.tasks.length,
         );
       },
     );

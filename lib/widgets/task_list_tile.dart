@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:tasks_app/config/styles.dart';
 
 class TaskListTile extends StatelessWidget {
   final String taskTitle;
@@ -25,6 +26,7 @@ class TaskListTile extends StatelessWidget {
         child: Text(
           taskTitle,
           style: TextStyle(
+            decoration: isChecked ? TextDecoration.lineThrough : null,
             color: Colors.white,
             fontSize: 24,
             fontWeight: FontWeight.bold,
@@ -35,13 +37,17 @@ class TaskListTile extends StatelessWidget {
         padding: EdgeInsets.symmetric(vertical: 5.0),
         child: Text(
           date,
-          style: TextStyle(color: Color(0xFF73A99C), fontSize: 13.0),
+          style: TextStyle(
+            color: lightGreen,
+            fontSize: 13.0,
+            decoration: isChecked ? TextDecoration.lineThrough : null,
+          ),
         ),
       ),
       isThreeLine: true,
       onTap: onTap,
       trailing: Theme(
-        data: ThemeData(unselectedWidgetColor: Color(0xFF73A99C)),
+        data: ThemeData(unselectedWidgetColor: lightGreen),
         child: Checkbox(
           value: isChecked,
           onChanged: onChanged,
