@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:tasks_app/widgets/task_list_view.dart';
 import 'package:tasks_app/config/styles.dart';
@@ -13,7 +12,7 @@ class TaskPage extends StatelessWidget {
       backgroundColor: backgroundPrimary,
       body: Padding(
         padding: EdgeInsets.only(
-            top: _height * 0.075, left: _width * 0.05, right: _width * 0.05),
+            top: _height * 0.075, left: _width * 0.025, right: _width * 0.025),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[

@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:tasks_app/models/task.dart';
+import 'package:tasks_app/models/task_data.dart';
 import 'package:tasks_app/widgets/clickable_icon.dart';
 
 class TaskDetailScreen extends StatelessWidget {
   static const routeName = '/details';
+  final DateFormat formatterDate = DateFormat('dd MMMM yyyy');
+  final DateFormat formatterReminder = DateFormat('MMM dd, HH:mm');
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +98,7 @@ class TaskDetailScreen extends StatelessWidget {
                   direction: Axis.horizontal,
                   iconData: Icons.calendar_today,
                   iconSize: 40,
-                  title: task.date,
+                  title: formatterDate.format(task.date),
                   itemSpacing: _width * 0.05,
                 ),
                 SizedBox(
@@ -103,7 +108,7 @@ class TaskDetailScreen extends StatelessWidget {
                   direction: Axis.horizontal,
                   iconData: Icons.notifications,
                   iconSize: 40,
-                  title: 'Sept 6, 8:30 pm',
+                  title: formatterReminder.format(task.reminder),
                   itemSpacing: _width * 0.05,
                 ),
               ],
