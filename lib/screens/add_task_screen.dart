@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tasks_app/database/db_helper.dart';
+import 'package:tasks_app/models/task.dart';
 import 'package:tasks_app/models/task_data.dart';
 import 'package:tasks_app/widgets/clickable_icon.dart';
 import 'package:flutter_material_pickers/flutter_material_pickers.dart';
@@ -295,8 +297,12 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
   // TODO make sure that Title exists and check for input time against current time
   _submit() {
-    Provider.of<TaskData>(context, listen: false)
-        .addTask(_title, _description, _inputDateTime, _reminder);
+    Task newTask = Task(
+        title: _title,
+        description: _description,
+        date: _inputDateTime,
+        reminder: _reminder);
+    Provider.of<DBHelper>(context, listen: false).insertTask(newTask);
     Navigator.pop(context);
   }
 }

@@ -1,15 +1,15 @@
+import 'dart:async';
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:tasks_app/models/task.dart';
 
-class DatabaseHelper {
+class DBHelper extends ChangeNotifier {
   static final _databaseName = 'TaskDatabase.db';
   static final _databaseVersion = 1;
 
-  DatabaseHelper._privateConstructor();
-
-  static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
+  DBHelper();
 
   // only have a single app-wide reference to the database
   static Database _database;
@@ -35,26 +35,28 @@ class DatabaseHelper {
 
   //insert to database
   Future<void> insertTask(Task task) async {
-    final Database db = await instance.database;
+    final Database db = await database;
     await db.insert('tasks', task.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
+    notifyListeners();
   }
 
   //delete from database
   Future<void> deleteTask(int id) async {
-    final Database db = await instance.database;
+    final Database db = await database;
 
     await db.delete(
       'tasks',
       where: "id = ?",
       whereArgs: [id],
     );
+    notifyListeners();
   }
 
   //get from database
 
   Future<List<Task>> tasks() async {
-    final Database db = await instance.database;
+    final Database db = await database;
     final List<Map<String, dynamic>> maps = await db.query('tasks');
     print(maps);
     return List.generate(maps.length, (index) {
@@ -62,8 +64,10 @@ class DatabaseHelper {
         id: maps[index]['id'],
         title: maps[index]['title'],
         description: maps[index]['description'],
-        date: maps[index]['date'],
-        reminder: maps[index]['date'],
+        date: DateTime.parse(maps[index]['date']),
+        reminder: maps[index]['date'] == "no reminder"
+            ? null
+            : DateTime.parse(maps[index]['date']),
         isChecked: maps[index]['isChecked'] == 1 ? true : false,
         isCompleted: maps[index]['isCompleted'] == 1 ? true : false,
       );
@@ -72,18 +76,26 @@ class DatabaseHelper {
 
   //update from database
 
-  // Future<void> updateTask(Task task) async {
-  //   final Database db = await instance.database;
-  //   print(task.isDone);
-  //   await db
-  //       .update('tasks', task.toMap(), where: "id = ?", whereArgs: [task.id]);
-  //   final List<Map<String, dynamic>> maps = await db.query('tasks');
-  //   print(maps);
-  // }
+  Future<void> completeTask(Task task) async {
+    final Database db = await database;
+    task.toggleChecked();
+    await db
+        .update('tasks', task.toMap(), where: "id = ?", whereArgs: [task.id]);
+    notifyListeners();
+    Timer(Duration(milliseconds: 750), () async {
+      task.toggleCompleted();
+      await db
+          .update('tasks', task.toMap(), where: "id = ?", whereArgs: [task.id]);
+      notifyListeners();
+    });
+
+    final List<Map<String, dynamic>> maps = await db.query('tasks');
+    print(maps);
+  }
 
   //get row count
   Future<int> queryRowCount() async {
-    Database db = await instance.database;
+    Database db = await database;
     return Sqflite.firstIntValue(
         await db.rawQuery('SELECT COUNT(*) FROM tasks'));
   }

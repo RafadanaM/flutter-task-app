@@ -8,6 +8,7 @@ import 'package:tasks_app/screens/task_page.dart';
 import 'package:tasks_app/screens/fourth_page.dart';
 import 'package:tasks_app/screens/second_page.dart';
 import 'package:tasks_app/screens/third_page.dart';
+import 'database/db_helper.dart';
 import 'widgets/fab_bottom_app_bar.dart';
 
 void main() {
@@ -16,10 +17,11 @@ void main() {
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => TaskData(),
+      create: (context) => DBHelper(),
       child: MaterialApp(
         title: 'Flutter Demo',
         initialRoute: MyHomePage.routeName,
