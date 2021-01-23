@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class TaskListTile extends StatelessWidget {
@@ -19,10 +20,16 @@ class TaskListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(
-        taskTitle,
-        style: TextStyle(
-            color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+      title: Padding(
+        padding: const EdgeInsets.only(top: 5.0),
+        child: Text(
+          taskTitle,
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
       subtitle: Padding(
         padding: EdgeInsets.symmetric(vertical: 5.0),

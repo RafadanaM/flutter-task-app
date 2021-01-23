@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:tasks_app/widgets/task_list_view.dart';
 import 'package:tasks_app/config/styles.dart';
@@ -12,8 +11,8 @@ class TaskPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: backgroundPrimary,
       body: Padding(
-        padding: EdgeInsets.only(
-            top: _height * 0.075, left: _width * 0.05, right: _width * 0.05),
+        padding: EdgeInsets.symmetric(
+            vertical: _height * 0.075, horizontal: _width * 0.025),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -23,9 +22,6 @@ class TaskPage extends StatelessWidget {
                 fontSize: 36.0,
                 fontWeight: FontWeight.bold,
               ),
-            ),
-            SizedBox(
-              height: _height * 0.025,
             ),
             Expanded(
               child: TaskListView(),

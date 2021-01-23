@@ -16,9 +16,10 @@ class _TaskListViewState extends State<TaskListView> {
     return Consumer<TaskData>(
       builder: (context, taskData, child) {
         return ListView.separated(
+          padding: EdgeInsets.symmetric(vertical: 22),
           separatorBuilder: (BuildContext context, int index) {
             return SizedBox(
-              height: 20.0,
+              height: 10.0,
             );
           },
           itemBuilder: (context, index) {
