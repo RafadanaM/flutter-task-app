@@ -19,16 +19,27 @@ class TaskListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(
-        taskTitle,
-        style: TextStyle(
-            color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+      title: Padding(
+        padding: const EdgeInsets.only(top: 5.0),
+        child: Text(
+          taskTitle,
+          style: TextStyle(
+            decoration: isChecked ? TextDecoration.lineThrough : null,
+            color: Colors.white,
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
       subtitle: Padding(
         padding: EdgeInsets.symmetric(vertical: 5.0),
         child: Text(
           date,
-          style: TextStyle(color: Color(0xFF73A99C), fontSize: 13.0),
+          style: TextStyle(
+            color: Color(0xFF73A99C),
+            fontSize: 13.0,
+            decoration: isChecked ? TextDecoration.lineThrough : null,
+          ),
         ),
       ),
       isThreeLine: true,

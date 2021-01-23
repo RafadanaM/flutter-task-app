@@ -59,7 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final Size size = MediaQuery.of(context).size;
     return Scaffold(
       extendBody: true,
-      backgroundColor: Color(0xFFE5E5E5),
+      backgroundColor: Color(0xFFEFF6F4),
       body: IndexedStack(
         index: _selectedIndex,
         children: _pages,

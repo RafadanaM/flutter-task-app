@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:tasks_app/models/task.dart';
 
@@ -10,19 +12,13 @@ class TaskData extends ChangeNotifier {
       reminder: DateTime.now(),
     ),
     Task(
-      title: "new Title",
+      title: "new Title2",
       description: "A description",
       date: DateTime.now().add(Duration(minutes: 30)),
       reminder: DateTime.now(),
     ),
     Task(
-      title: "new Title",
-      description: "A description",
-      date: DateTime.now().add(Duration(minutes: 30)),
-      reminder: DateTime.now(),
-    ),
-    Task(
-      title: "new Title",
+      title: "new Title3",
       description: "A description",
       date: DateTime.now().add(Duration(minutes: 30)),
       reminder: DateTime.now(),
@@ -49,7 +45,17 @@ class TaskData extends ChangeNotifier {
   }
 
   void updateTask(Task task) {
-    task.toggleCompleted();
+    task.toggleChecked();
     notifyListeners();
+    Timer(Duration(milliseconds: 750), () {
+      task.toggleCompleted();
+      notifyListeners();
+    });
+  }
+
+  void deleteTask(Task task) {
+    print(task);
+    print(_tasks);
+    _tasks.removeWhere((element) => identical(task, element));
   }
 }
