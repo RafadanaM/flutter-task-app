@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:tasks_app/database/db_helper.dart';
 import 'package:tasks_app/models/task.dart';
 import 'package:tasks_app/models/task_data.dart';
 import 'package:tasks_app/widgets/clickable_icon.dart';
@@ -42,7 +43,9 @@ class TaskDetailScreen extends StatelessWidget {
                 title: 'Delete',
                 itemSpacing: 5.0,
                 onTap: () {
-                  print('Delete is pressed');
+                  Navigator.pop(context);
+                  Provider.of<DBHelper>(context, listen: false)
+                      .deleteTask(task.id);
                 },
               ),
             ],

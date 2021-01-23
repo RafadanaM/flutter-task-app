@@ -1,3 +1,4 @@
+import 'package:circular_check_box/circular_check_box.dart';
 import 'package:flutter/material.dart';
 
 class TaskListTile extends StatelessWidget {
@@ -45,12 +46,19 @@ class TaskListTile extends StatelessWidget {
       isThreeLine: true,
       onTap: onTap,
       trailing: Theme(
-        data: ThemeData(unselectedWidgetColor: Color(0xFF73A99C)),
-        child: Checkbox(
-          value: isChecked,
-          onChanged: onChanged,
-        ),
-      ),
+          data: ThemeData(unselectedWidgetColor: Color(0xFF73A99C)),
+          child: CircularCheckBox(
+            checkColor: Color(0xFF1F6355),
+            activeColor: Color(0xFF73A99C),
+            value: isChecked,
+            materialTapTargetSize: MaterialTapTargetSize.padded,
+            onChanged: onChanged,
+          )),
     );
   }
 }
+
+// Checkbox(
+// value: isChecked,
+// onChanged: onChanged,
+// ),

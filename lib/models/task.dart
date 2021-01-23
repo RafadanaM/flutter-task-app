@@ -30,7 +30,7 @@ class Task {
       'title': title,
       'description': description,
       'date': date.toIso8601String(),
-      'reminder': reminder.toIso8601String(),
+      'reminder': reminder == null ? "no reminder" : reminder.toIso8601String(),
       'isChecked': isChecked ? 1 : 0,
       'isCompleted': isCompleted ? 1 : 0,
     };
