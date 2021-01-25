@@ -4,7 +4,7 @@ import 'package:tasks_app/widgets/task_list_view.dart';
 import 'package:tasks_app/config/type.dart';
 
 class ThirdPage extends StatelessWidget {
-  static const routeName = '/third';
+  static const routeName = '/completed';
 
   @override
   Widget build(BuildContext context) {
