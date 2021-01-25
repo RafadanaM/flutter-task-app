@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:tasks_app/config/type.dart';
-import 'package:tasks_app/widgets/task_list_view.dart';
 import 'package:tasks_app/config/styles.dart';
+import 'package:tasks_app/widgets/task_list_view.dart';
+import 'package:tasks_app/config/type.dart';
 
-class TaskPage extends StatelessWidget {
-  static const routeName = '/task';
+class ThirdPage extends StatelessWidget {
+  static const routeName = '/completed';
+
   @override
   Widget build(BuildContext context) {
     double _height = MediaQuery.of(context).size.height;
@@ -18,7 +19,7 @@ class TaskPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(
-              'My Tasks',
+              'Completed',
               style: TextStyle(
                 fontSize: 36.0,
                 fontWeight: FontWeight.bold,
@@ -26,7 +27,7 @@ class TaskPage extends StatelessWidget {
             ),
             Expanded(
               child: TaskListView(
-                type: Type.incomplete,
+                type: Type.complete,
               ),
             ),
           ],

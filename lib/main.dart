@@ -7,7 +7,7 @@ import 'package:tasks_app/screens/task_detail_screen.dart';
 import 'package:tasks_app/screens/task_page.dart';
 import 'package:tasks_app/screens/fourth_page.dart';
 import 'package:tasks_app/screens/second_page.dart';
-import 'package:tasks_app/screens/third_page.dart';
+import 'package:tasks_app/screens/completed_page.dart';
 import 'database/db_helper.dart';
 import 'widgets/fab_bottom_app_bar.dart';
 
