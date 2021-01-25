@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -73,6 +72,7 @@ class DBHelper extends ChangeNotifier {
 
   Future<List<Task>> tasks() async {
     final Database db = await database;
+
     final List<Map<String, dynamic>> maps = await db.query('tasks');
     print(maps);
     return List.generate(maps.length, (index) {
