@@ -1,5 +1,6 @@
 import 'package:circular_check_box/circular_check_box.dart';
 import 'package:flutter/material.dart';
+import 'package:tasks_app/config/styles.dart';
 
 class TaskListTile extends StatelessWidget {
   final String taskTitle;
@@ -37,7 +38,7 @@ class TaskListTile extends StatelessWidget {
         child: Text(
           date,
           style: TextStyle(
-            color: Color(0xFF73A99C),
+            color: lightGreen,
             fontSize: 13.0,
             decoration: isChecked ? TextDecoration.lineThrough : null,
           ),

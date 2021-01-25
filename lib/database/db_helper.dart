@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+
+import 'package:tasks_app/models/grocery.dart';
 import 'package:tasks_app/models/task.dart';
 
 class DBHelper extends ChangeNotifier {
@@ -23,12 +25,26 @@ class DBHelper extends ChangeNotifier {
   _initDatabase() async {
     // Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(await getDatabasesPath(), _databaseName);
-    return await openDatabase(path, version: _databaseVersion,
-        onCreate: (db, version) {
-      return db.execute(
-        "CREATE TABLE tasks(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, description TEXT, date TEXT, reminder TEXT ,isChecked INTEGER, isCompleted INTEGER)",
-      );
-    });
+
+    return await openDatabase(path,
+        version: _databaseVersion, onCreate: (db, version) => _createDB(db));
+  }
+
+  static void _createDB(Database db) {
+    db.execute(
+      'CREATE TABLE tasks(id INTEGER PRIMARY KEY AUTOINCREMENT, '
+      'title TEXT, '
+      'description TEXT, '
+      'date TEXT, '
+      'reminder TEXT ,'
+      'isChecked INTEGER, '
+      'isCompleted INTEGER)',
+    );
+    db.execute(
+      'CREATE TABLE groceries(id INTEGER PRIMARY KEY AUTOINCREMENT, '
+      'title TEXT, '
+      'isCompleted INTEGER)',
+    );
   }
 
   //helper
@@ -65,7 +81,7 @@ class DBHelper extends ChangeNotifier {
         title: maps[index]['title'],
         description: maps[index]['description'],
         date: DateTime.parse(maps[index]['date']),
-        reminder: maps[index]['date'] == "no reminder"
+        reminder: maps[index]['date'] == 'no reminder'
             ? null
             : DateTime.parse(maps[index]['date']),
         isChecked: maps[index]['isChecked'] == 1 ? true : false,
@@ -80,12 +96,12 @@ class DBHelper extends ChangeNotifier {
     final Database db = await database;
     task.toggleChecked();
     await db
-        .update('tasks', task.toMap(), where: "id = ?", whereArgs: [task.id]);
+        .update('tasks', task.toMap(), where: 'id = ?', whereArgs: [task.id]);
     notifyListeners();
     Timer(Duration(milliseconds: 750), () async {
       task.toggleCompleted();
       await db
-          .update('tasks', task.toMap(), where: "id = ?", whereArgs: [task.id]);
+          .update('tasks', task.toMap(), where: 'id = ?', whereArgs: [task.id]);
       notifyListeners();
     });
 
@@ -98,5 +114,41 @@ class DBHelper extends ChangeNotifier {
     Database db = await database;
     return Sqflite.firstIntValue(
         await db.rawQuery('SELECT COUNT(*) FROM tasks'));
+  }
+
+  //insert to database
+  Future<void> insertGrocery(Grocery grocery) async {
+    final Database db = await database;
+    await db.insert('groceries', grocery.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace);
+    notifyListeners();
+  }
+
+  //delete from database
+  Future<void> deleteGrocery(int id) async {
+    final Database db = await database;
+
+    await db.delete(
+      'groceries',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+    notifyListeners();
+  }
+
+  //get from database
+
+  Future<List<Grocery>> groceries() async {
+    final Database db = await database;
+
+    final List<Map<String, dynamic>> maps = await db.query('groceries');
+    print(maps);
+    return List.generate(maps.length, (index) {
+      return Grocery(
+        id: maps[index]['id'],
+        title: maps[index]['title'],
+        isCompleted: maps[index]['isCompleted'] == 1 ? true : false,
+      );
+    });
   }
 }

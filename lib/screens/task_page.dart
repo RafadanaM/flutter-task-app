@@ -23,9 +23,6 @@ class TaskPage extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(
-              height: _height * 0.025,
-            ),
             Expanded(
               child: TaskListView(),
             ),
