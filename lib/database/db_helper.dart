@@ -90,6 +90,52 @@ class DBHelper extends ChangeNotifier {
     });
   }
 
+  Future<List<Task>> getIncompleteTasks() async {
+    final Database db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      'tasks',
+      where: "isCompleted = ?",
+      whereArgs: [0],
+    );
+    print(maps);
+    return List.generate(maps.length, (index) {
+      return Task(
+        id: maps[index]['id'],
+        title: maps[index]['title'],
+        description: maps[index]['description'],
+        date: DateTime.parse(maps[index]['date']),
+        reminder: maps[index]['date'] == 'no reminder'
+            ? null
+            : DateTime.parse(maps[index]['date']),
+        isChecked: maps[index]['isChecked'] == 1 ? true : false,
+        isCompleted: maps[index]['isCompleted'] == 1 ? true : false,
+      );
+    });
+  }
+
+  Future<List<Task>> getCompletedTasks() async {
+    final Database db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      'tasks',
+      where: "isCompleted = ?",
+      whereArgs: [1],
+    );
+    print(maps);
+    return List.generate(maps.length, (index) {
+      return Task(
+        id: maps[index]['id'],
+        title: maps[index]['title'],
+        description: maps[index]['description'],
+        date: DateTime.parse(maps[index]['date']),
+        reminder: maps[index]['date'] == 'no reminder'
+            ? null
+            : DateTime.parse(maps[index]['date']),
+        isChecked: maps[index]['isChecked'] == 1 ? true : false,
+        isCompleted: maps[index]['isCompleted'] == 1 ? true : false,
+      );
+    });
+  }
+
   //update from database
 
   Future<void> completeTask(Task task) async {

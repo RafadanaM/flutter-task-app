@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tasks_app/config/type.dart';
 import 'package:tasks_app/widgets/task_list_view.dart';
 import 'package:tasks_app/config/styles.dart';
 
@@ -24,7 +25,9 @@ class TaskPage extends StatelessWidget {
               ),
             ),
             Expanded(
-              child: TaskListView(),
+              child: TaskListView(
+                type: Type.incomplete,
+              ),
             ),
           ],
         ),

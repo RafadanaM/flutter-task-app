@@ -1,6 +1,7 @@
 import 'package:circular_check_box/circular_check_box.dart';
 import 'package:flutter/material.dart';
 import 'package:tasks_app/config/styles.dart';
+import 'package:tasks_app/config/type.dart';
 
 class TaskListTile extends StatelessWidget {
   final String taskTitle;
@@ -9,14 +10,17 @@ class TaskListTile extends StatelessWidget {
   final Function onChanged;
   final Function onTap;
   final bool isChecked;
+  final Type type;
 
-  TaskListTile(
-      {this.taskTitle,
-      this.taskDescription,
-      this.date,
-      this.isChecked,
-      this.onChanged,
-      this.onTap});
+  TaskListTile({
+    this.taskTitle,
+    this.taskDescription,
+    this.date,
+    this.isChecked,
+    this.onChanged,
+    this.onTap,
+    this.type,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -35,16 +39,18 @@ class TaskListTile extends StatelessWidget {
       ),
       subtitle: Padding(
         padding: EdgeInsets.symmetric(vertical: 5.0),
-        child: Text(
-          date,
-          style: TextStyle(
-            color: lightGreen,
-            fontSize: 13.0,
-            decoration: isChecked ? TextDecoration.lineThrough : null,
-          ),
-        ),
+        child: type == Type.incomplete
+            ? Text(
+                date,
+                style: TextStyle(
+                  color: lightGreen,
+                  fontSize: 13.0,
+                  decoration: isChecked ? TextDecoration.lineThrough : null,
+                ),
+              )
+            : null,
       ),
-      isThreeLine: true,
+      isThreeLine: type == Type.incomplete,
       onTap: onTap,
       trailing: Theme(
           data: ThemeData(unselectedWidgetColor: Color(0xFF73A99C)),
