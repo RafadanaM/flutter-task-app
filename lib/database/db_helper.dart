@@ -81,9 +81,9 @@ class DBHelper extends ChangeNotifier {
         title: maps[index]['title'],
         description: maps[index]['description'],
         date: DateTime.parse(maps[index]['date']),
-        reminder: maps[index]['date'] == 'no reminder'
+        reminder: maps[index]['reminder'] == 'no reminder'
             ? null
-            : DateTime.parse(maps[index]['date']),
+            : DateTime.parse(maps[index]['reminder']),
         isChecked: maps[index]['isChecked'] == 1 ? true : false,
         isCompleted: maps[index]['isCompleted'] == 1 ? true : false,
       );
@@ -104,9 +104,9 @@ class DBHelper extends ChangeNotifier {
         title: maps[index]['title'],
         description: maps[index]['description'],
         date: DateTime.parse(maps[index]['date']),
-        reminder: maps[index]['date'] == 'no reminder'
+        reminder: maps[index]['reminder'] == 'no reminder'
             ? null
-            : DateTime.parse(maps[index]['date']),
+            : DateTime.parse(maps[index]['reminder']),
         isChecked: maps[index]['isChecked'] == 1 ? true : false,
         isCompleted: maps[index]['isCompleted'] == 1 ? true : false,
       );
@@ -127,17 +127,16 @@ class DBHelper extends ChangeNotifier {
         title: maps[index]['title'],
         description: maps[index]['description'],
         date: DateTime.parse(maps[index]['date']),
-        reminder: maps[index]['date'] == 'no reminder'
+        reminder: maps[index]['reminder'] == 'no reminder'
             ? null
-            : DateTime.parse(maps[index]['date']),
+            : DateTime.parse(maps[index]['reminder']),
         isChecked: maps[index]['isChecked'] == 1 ? true : false,
         isCompleted: maps[index]['isCompleted'] == 1 ? true : false,
       );
     });
   }
 
-  //update from database
-
+  //change complete task
   Future<void> completeTask(Task task) async {
     final Database db = await database;
     task.toggleChecked();
@@ -151,6 +150,18 @@ class DBHelper extends ChangeNotifier {
       notifyListeners();
     });
 
+    final List<Map<String, dynamic>> maps = await db.query('tasks');
+    print(maps);
+  }
+
+  Future<void> updateTask(Task task) async {
+    final Database db = await database;
+    print(task.id);
+    print(task.title);
+    print(task.description);
+    await db
+        .update('tasks', task.toMap(), where: 'id = ?', whereArgs: [task.id]);
+    notifyListeners();
     final List<Map<String, dynamic>> maps = await db.query('tasks');
     print(maps);
   }

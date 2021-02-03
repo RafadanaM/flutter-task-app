@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:tasks_app/database/db_helper.dart';
 import 'package:tasks_app/models/task.dart';
-import 'package:tasks_app/models/task_data.dart';
 import 'package:tasks_app/widgets/clickable_icon.dart';
 
 class TaskDetailScreen extends StatelessWidget {

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tasks_app/database/db_helper.dart';
 import 'package:tasks_app/models/task.dart';
-import 'package:tasks_app/models/task_data.dart';
 import 'package:tasks_app/widgets/clickable_icon.dart';
 import 'package:flutter_material_pickers/flutter_material_pickers.dart';
 import 'package:intl/intl.dart';
@@ -11,26 +10,31 @@ import 'package:intl/intl.dart';
 class AddTaskScreen extends StatefulWidget {
   static const routeName = '/add';
 
+  final Task task;
+  const AddTaskScreen(this.task);
+
   @override
   _AddTaskScreenState createState() => _AddTaskScreenState();
 }
 
 class _AddTaskScreenState extends State<AddTaskScreen> {
-  String stateText;
   DateTime _pickedDate;
   DateTime _inputDateTime;
   TimeOfDay _pickedTime;
-  String _title = "";
-  String _description = "";
   DateTime _reminder;
   double _height;
   double _width;
   bool _isAllowed = false;
+  bool _isReadOnly;
   List<String> _minutes;
   final DateFormat formatter = DateFormat('MMM dd, HH:mm');
+  TextEditingController titleController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
 
   @override
   void initState() {
+    //final Task task = ModalRoute.of(context).settings.arguments;
+    // print(widget.task.title);
     super.initState();
     _minutes = <String>[
       '5 Minutes',
@@ -40,11 +44,23 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
       '25 Minutes',
       '30 Minutes',
     ];
-    _pickedDate = DateTime.now();
-    _pickedTime = TimeOfDay.now();
-    _reminder = null;
-    _inputDateTime = DateTime(_pickedDate.year, _pickedDate.month,
-        _pickedDate.day, _pickedTime.hour, _pickedTime.minute);
+    _isReadOnly = widget.task != null;
+    _pickedDate = widget.task == null
+        ? DateTime.now()
+        : DateTime(widget.task.date.year, widget.task.date.month,
+            widget.task.date.day);
+    _pickedTime = widget.task == null
+        ? TimeOfDay.now()
+        : TimeOfDay(
+            hour: widget.task.date.hour, minute: widget.task.date.minute);
+    titleController.text = widget.task == null ? "" : widget.task.title;
+    descriptionController.text =
+        widget.task == null ? "" : widget.task.description;
+    _reminder = widget.task == null ? null : widget.task.reminder;
+    _inputDateTime = widget.task == null
+        ? DateTime(_pickedDate.year, _pickedDate.month, _pickedDate.day,
+            _pickedTime.hour, _pickedTime.minute)
+        : widget.task.date;
   }
 
   @override
@@ -54,6 +70,45 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
     return Scaffold(
       backgroundColor: Color(0xFF064B41),
+      bottomNavigationBar: widget.task == null
+          ? BottomAppBar()
+          : BottomAppBar(
+              elevation: 0,
+              color: Color(0xFF064B41),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    ClickableIcon(
+                      direction: Axis.vertical,
+                      iconData: _isReadOnly ? Icons.edit : Icons.clear,
+                      iconSize: 35,
+                      title: _isReadOnly ? 'Edit' : 'Cancel',
+                      itemSpacing: 5.0,
+                      onTap: () {
+                        _toggleEdit();
+                      },
+                    ),
+                    ClickableIcon(
+                      direction: Axis.vertical,
+                      iconData: _isReadOnly ? Icons.delete : Icons.check,
+                      iconSize: 35,
+                      title: _isReadOnly ? 'Delete' : 'Save',
+                      itemSpacing: 5.0,
+                      onTap: () async {
+                        _isReadOnly ?? Navigator.pop(context);
+                        _isReadOnly
+                            ? await Provider.of<DBHelper>(context,
+                                    listen: false)
+                                .deleteTask(widget.task.id)
+                            : _submit();
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
       body: Stack(
         children: <Widget>[
           SingleChildScrollView(
@@ -86,7 +141,10 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                             size: 40,
                           ),
                         ),
-                        TextField(
+                        TextFormField(
+                          validator: _checkTitle(titleController.text),
+                          readOnly: _isReadOnly,
+                          controller: titleController,
                           maxLines: 1,
                           style: TextStyle(
                               color: Colors.black,
@@ -101,10 +159,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                                 fontWeight: FontWeight.bold,
                                 fontSize: 34.0),
                           ),
-                          onChanged: (String newTitle) {
-                            _title = newTitle;
-                            _checkTitle(newTitle);
-                          },
                         ),
                       ],
                     ),
@@ -116,6 +170,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       TextField(
+                        readOnly: _isReadOnly,
+                        controller: descriptionController,
                         minLines: 2,
                         maxLines: 6,
                         style: TextStyle(
@@ -125,15 +181,14 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                         cursorColor: Colors.grey,
                         decoration: InputDecoration(
                           border: InputBorder.none,
-                          hintText: 'Description',
+                          hintText: widget.task == null || !_isReadOnly
+                              ? 'Description'
+                              : "No description",
                           hintStyle: TextStyle(
                               color: Color(0xFF73A99C),
                               fontWeight: FontWeight.bold,
                               fontSize: 18.0),
                         ),
-                        onChanged: (String newDescription) {
-                          _description = newDescription;
-                        },
                       ),
                       // SizedBox(
                       //   height: _height * 0.025,
@@ -147,8 +202,10 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                         titleSize: 18.0,
                         itemSpacing: 20.0,
                         onTap: () {
-                          FocusScope.of(context).unfocus();
-                          _pickDateTime();
+                          if (!_isReadOnly) {
+                            FocusScope.of(context).unfocus();
+                            _pickDateTime();
+                          }
                         },
                       ),
                       // SizedBox(
@@ -164,8 +221,10 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                         titleSize: 18.0,
                         itemSpacing: 20.0,
                         onTap: () {
-                          FocusScope.of(context).unfocus();
-                          _dropDown();
+                          if (!_isReadOnly) {
+                            FocusScope.of(context).unfocus();
+                            _dropDown();
+                          }
                         },
                       ),
                     ],
@@ -174,39 +233,49 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
               ],
             ),
           ),
-          Container(
-            margin: EdgeInsets.all(20),
-            child: Align(
-              alignment: Alignment.bottomRight,
-              child: ButtonTheme(
-                minWidth: 70,
-                height: 41,
-                child: RaisedButton(
-                  color: Color(0xFFFF844C),
-                  disabledColor: Colors.grey[400],
-                  textColor: Colors.white,
-                  elevation: 10,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+          widget.task == null
+              ? Container(
+                  margin: EdgeInsets.all(20),
+                  child: Align(
+                    alignment: Alignment.bottomRight,
+                    child: ButtonTheme(
+                      minWidth: 70,
+                      height: 41,
+                      child: RaisedButton(
+                        color: Color(0xFFFF844C),
+                        disabledColor: Colors.grey[400],
+                        textColor: Colors.white,
+                        elevation: 10,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        onPressed: _isAllowed
+                            ? () {
+                                _submit();
+                              }
+                            : null,
+                        child: Text('Save'),
+                      ),
+                    ),
                   ),
-                  onPressed: _isAllowed
-                      ? () {
-                          print("===================");
-                          print(_title);
-                          print(_description);
-                          print(_inputDateTime);
-                          print(_reminder);
-                          _submit();
-                        }
-                      : null,
-                  child: Text('Save'),
-                ),
-              ),
-            ),
-          )
+                )
+              : Container()
         ],
       ),
     );
+  }
+
+  _toggleEdit() {
+    setState(() {
+      _isReadOnly = !_isReadOnly;
+      if (_isReadOnly) {
+        Task task = widget.task;
+        titleController.text = task.title;
+        descriptionController.text = task.description;
+        _inputDateTime = task.date;
+        _reminder = task.reminder;
+      }
+    });
   }
 
   _checkTitle(String title) {
@@ -251,21 +320,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     }
   }
 
-  // _pickTime() async {
-  //   TimeOfDay time = await showTimePicker(
-  //     context: context,
-  //     initialTime: _pickedTime,
-  //   );
-  //   DateTime currentDateTime = DateTime.now();
-  //   DateTime inputDateTime = date
-  //   if (time != null) {
-  //     if()
-  //     setState(() {
-  //       _pickedTime = time;
-  //     });
-  //   }
-  // }
-
   _dropDown() {
     return showMaterialScrollPicker(
         context: context,
@@ -296,14 +350,27 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   // }
 
   // TODO make sure that Title exists and check for input time against current time
-  _submit() {
+  _submit() async {
     Task newTask = Task(
-        title: _title,
-        description: _description,
+        id: widget.task == null ? null : widget.task.id,
+        title: titleController.text,
+        description: descriptionController.text,
         date: _inputDateTime,
         reminder: _reminder);
-    Provider.of<DBHelper>(context, listen: false).insertTask(newTask);
+
+    widget.task == null
+        ? await Provider.of<DBHelper>(context, listen: false)
+            .insertTask(newTask)
+        : await Provider.of<DBHelper>(context, listen: false)
+            .updateTask(newTask);
 
     Navigator.pop(context);
+  }
+
+  @override
+  void dispose() {
+    titleController.dispose();
+    descriptionController.dispose();
+    super.dispose();
   }
 }
