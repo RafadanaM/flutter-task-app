@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tasks_app/models/task_data.dart';
 import 'package:tasks_app/screens/add_task_screen.dart';
 import 'package:tasks_app/screens/task_detail_screen.dart';
 import 'package:tasks_app/screens/task_page.dart';
@@ -25,11 +24,21 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Flutter Demo',
         initialRoute: MyHomePage.routeName,
-        routes: {
-          MyHomePage.routeName: (context) => MyHomePage(),
-          TaskDetailScreen.routeName: (context) => TaskDetailScreen(),
-          AddTaskScreen.routeName: (context) => AddTaskScreen(),
+        onGenerateRoute: (RouteSettings settings) {
+          var routes = <String, WidgetBuilder>{
+            MyHomePage.routeName: (context) => MyHomePage(),
+            TaskDetailScreen.routeName: (context) => TaskDetailScreen(),
+            AddTaskScreen.routeName: (context) =>
+                AddTaskScreen(settings.arguments),
+          };
+          WidgetBuilder builder = routes[settings.name];
+          return MaterialPageRoute(builder: (context) => builder(context));
         },
+        // routes: {
+        //   MyHomePage.routeName: (context) => MyHomePage(),
+        //   TaskDetailScreen.routeName: (context) => TaskDetailScreen(),
+        //   AddTaskScreen.routeName: (context) => AddTaskScreen(),
+        // },
       ),
     );
   }
@@ -58,7 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
+    //final Size size = MediaQuery.of(context).size;
     return Scaffold(
       extendBody: true,
       backgroundColor: Color(0xFFEFF6F4),
