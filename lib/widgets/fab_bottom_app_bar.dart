@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tasks_app/screens/add_task_screen.dart';
 
 //items class for FABBottomBar
 //can turn it back to Icon class since it only needs IconData
@@ -9,6 +10,7 @@ class FABBottomAppBarItem {
 
 class FABBottomAppBar extends StatefulWidget {
   FABBottomAppBar({
+    this.isSecond,
     this.items,
     this.height: 70.0,
     this.iconSize: 24.0,
@@ -23,6 +25,7 @@ class FABBottomAppBar extends StatefulWidget {
     assert(this.items.length == 2 || this.items.length == 4);
   }
   final List<FABBottomAppBarItem> items;
+  final bool isSecond;
   final double height;
   final double iconSize;
   final double selectedIconSize;
@@ -86,21 +89,49 @@ class _FABBottomAppBarState extends State<FABBottomAppBar> {
   @return an empty SizedBox with the same height as the other navbar items
    */
   Widget _buildMiddleTabItem() {
-    return Expanded(
-      child: SizedBox(
-        height: widget.height,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            SizedBox(
-              height: widget.iconSize,
-            )
-          ],
-        ),
-      ),
-    );
+    return widget.isSecond
+        ? RawMaterialButton(
+            onPressed: () {
+              Navigator.pushNamed(context, AddTaskScreen.routeName);
+            },
+            elevation: 2.0,
+            fillColor: Color(0xFFFF844C),
+            child: Icon(
+              Icons.add,
+              size: 45.0,
+              color: Colors.white,
+            ),
+            padding: EdgeInsets.all(4.0),
+            shape: CircleBorder(),
+          )
+        : Expanded(
+            child: SizedBox(
+              height: widget.height,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(
+                    height: widget.iconSize,
+                  )
+                ],
+              ),
+            ),
+          );
   }
+
+  // SizedBox(
+  // height: widget.height,
+  // child: Column(
+  // mainAxisSize: MainAxisSize.min,
+  // mainAxisAlignment: MainAxisAlignment.center,
+  // children: <Widget>[
+  // SizedBox(
+  // height: widget.iconSize,
+  // )
+  // ],
+  // ),
+  // ),
 
   /*
   This method will update the current selected index

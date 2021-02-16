@@ -23,10 +23,10 @@ class MyApp extends StatelessWidget {
       create: (context) => DBHelper(),
       child: MaterialApp(
         title: 'Flutter Demo',
-        initialRoute: MyHomePage.routeName,
+        initialRoute: HomePage.routeName,
         onGenerateRoute: (RouteSettings settings) {
           var routes = <String, WidgetBuilder>{
-            MyHomePage.routeName: (context) => MyHomePage(),
+            HomePage.routeName: (context) => HomePage(),
             TaskDetailScreen.routeName: (context) => TaskDetailScreen(),
             AddTaskScreen.routeName: (context) =>
                 AddTaskScreen(settings.arguments),
@@ -44,13 +44,13 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatefulWidget {
+class HomePage extends StatefulWidget {
   static const routeName = '/';
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _HomePageState createState() => _HomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
   List<StatelessWidget> _pages = [
     TaskPage(),
@@ -75,18 +75,21 @@ class _MyHomePageState extends State<MyHomePage> {
         index: _selectedIndex,
         children: _pages,
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Color(0xFFFF844C),
-        onPressed: () {
-          Navigator.pushNamed(context, AddTaskScreen.routeName);
-        },
-        child: Icon(
-          Icons.add,
-          size: 50.0,
-        ),
-      ),
+      floatingActionButton: _selectedIndex == 1
+          ? null
+          : FloatingActionButton(
+              backgroundColor: Color(0xFFFF844C),
+              onPressed: () {
+                Navigator.pushNamed(context, AddTaskScreen.routeName);
+              },
+              child: Icon(
+                Icons.add,
+                size: 50.0,
+              ),
+            ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: FABBottomAppBar(
+        isSecond: _selectedIndex == 1,
         iconSize: 27.0,
         selectedIconSize: 35.0,
         backgroundColor: Color(0xFF064B41),

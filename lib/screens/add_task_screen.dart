@@ -6,6 +6,7 @@ import 'package:tasks_app/models/task.dart';
 import 'package:tasks_app/widgets/clickable_icon.dart';
 import 'package:flutter_material_pickers/flutter_material_pickers.dart';
 import 'package:intl/intl.dart';
+import 'package:tasks_app/main.dart';
 
 class AddTaskScreen extends StatefulWidget {
   static const routeName = '/add';
@@ -80,16 +81,17 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
-                    ClickableIcon(
-                      direction: Axis.vertical,
-                      iconData: _isReadOnly ? Icons.edit : Icons.clear,
-                      iconSize: 35,
-                      title: _isReadOnly ? 'Edit' : 'Cancel',
-                      itemSpacing: 5.0,
-                      onTap: () {
-                        _toggleEdit();
-                      },
-                    ),
+                    if (!widget.task.isCompleted)
+                      ClickableIcon(
+                        direction: Axis.vertical,
+                        iconData: _isReadOnly ? Icons.edit : Icons.clear,
+                        iconSize: 35,
+                        title: _isReadOnly ? 'Edit' : 'Cancel',
+                        itemSpacing: 5.0,
+                        onTap: () {
+                          _toggleEdit();
+                        },
+                      ),
                     ClickableIcon(
                       direction: Axis.vertical,
                       iconData: _isReadOnly ? Icons.delete : Icons.check,
@@ -97,11 +99,11 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                       title: _isReadOnly ? 'Delete' : 'Save',
                       itemSpacing: 5.0,
                       onTap: () async {
-                        _isReadOnly ?? Navigator.pop(context);
                         _isReadOnly
                             ? await Provider.of<DBHelper>(context,
                                     listen: false)
                                 .deleteTask(widget.task.id)
+                                .then((value) => Navigator.pop(context))
                             : _submit();
                       },
                     ),
@@ -364,7 +366,17 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
         : await Provider.of<DBHelper>(context, listen: false)
             .updateTask(newTask);
 
-    Navigator.pop(context);
+    widget.task == null
+        ? await Provider.of<DBHelper>(context, listen: false)
+            .insertTask(newTask)
+            .then((value) {
+            Navigator.pop(context);
+            Navigator.popAndPushNamed(context, HomePage.routeName);
+          })
+        : await Provider.of<DBHelper>(context, listen: false)
+            .updateTask(newTask);
+
+    // Navigator.pop(context);
   }
 
   @override
