@@ -68,7 +68,10 @@ class _GroceryListViewState extends State<GroceryListView> {
                                   value: snapshot.data[index].isCompleted,
                                   materialTapTargetSize:
                                       MaterialTapTargetSize.padded,
-                                  onChanged: (value) => print('rafa gay'),
+                                  onChanged: (value) => Provider.of<DBHelper>(
+                                          context,
+                                          listen: false)
+                                      .completeGrocery(snapshot.data[index]),
                                 )),
                           ],
                         ));
