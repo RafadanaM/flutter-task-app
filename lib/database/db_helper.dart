@@ -74,7 +74,6 @@ class DBHelper extends ChangeNotifier {
     final Database db = await database;
 
     final List<Map<String, dynamic>> maps = await db.query('tasks');
-    print(maps);
     return List.generate(maps.length, (index) {
       return Task(
         id: maps[index]['id'],
@@ -97,7 +96,6 @@ class DBHelper extends ChangeNotifier {
       where: "isCompleted = ?",
       whereArgs: [0],
     );
-    print(maps);
     return List.generate(maps.length, (index) {
       return Task(
         id: maps[index]['id'],
@@ -120,7 +118,6 @@ class DBHelper extends ChangeNotifier {
       where: "isCompleted = ?",
       whereArgs: [1],
     );
-    print(maps);
     return List.generate(maps.length, (index) {
       return Task(
         id: maps[index]['id'],
@@ -151,19 +148,14 @@ class DBHelper extends ChangeNotifier {
     });
 
     final List<Map<String, dynamic>> maps = await db.query('tasks');
-    print(maps);
   }
 
   Future<void> updateTask(Task task) async {
     final Database db = await database;
-    print(task.id);
-    print(task.title);
-    print(task.description);
     await db
         .update('tasks', task.toMap(), where: 'id = ?', whereArgs: [task.id]);
     notifyListeners();
     final List<Map<String, dynamic>> maps = await db.query('tasks');
-    print(maps);
   }
 
   //get row count
@@ -181,6 +173,14 @@ class DBHelper extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> completeGrocery(Grocery grocery) async {
+    final Database db = await database;
+    grocery.toggleCompleted();
+    await db.update('groceries', grocery.toMap(),
+        where: 'id = ?', whereArgs: [grocery.id]);
+    notifyListeners();
+  }
+
   //delete from database
   Future<void> deleteGrocery(int id) async {
     final Database db = await database;
@@ -194,12 +194,10 @@ class DBHelper extends ChangeNotifier {
   }
 
   //get from database
-
   Future<List<Grocery>> groceries() async {
     final Database db = await database;
 
     final List<Map<String, dynamic>> maps = await db.query('groceries');
-    print(maps);
     return List.generate(maps.length, (index) {
       return Grocery(
         id: maps[index]['id'],

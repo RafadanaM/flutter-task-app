@@ -26,7 +26,9 @@ class TaskListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: Padding(
-        padding: const EdgeInsets.only(top: 5.0),
+        padding: type == Type.incomplete
+            ? const EdgeInsets.only(top: 5.0)
+            : const EdgeInsets.symmetric(vertical: 5.0),
         child: Text(
           taskTitle,
           style: TextStyle(
@@ -37,19 +39,19 @@ class TaskListTile extends StatelessWidget {
           ),
         ),
       ),
-      subtitle: Padding(
-        padding: EdgeInsets.symmetric(vertical: 5.0),
-        child: type == Type.incomplete
-            ? Text(
+      subtitle: type == Type.incomplete
+          ? Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5.0),
+              child: Text(
                 date,
                 style: TextStyle(
                   color: lightGreen,
                   fontSize: 13.0,
                   decoration: isChecked ? TextDecoration.lineThrough : null,
                 ),
-              )
-            : null,
-      ),
+              ),
+            )
+          : null,
       isThreeLine: type == Type.incomplete,
       onTap: onTap,
       trailing: Theme(
