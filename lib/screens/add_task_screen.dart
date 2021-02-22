@@ -363,12 +363,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     widget.task == null
         ? await Provider.of<DBHelper>(context, listen: false)
             .insertTask(newTask)
-        : await Provider.of<DBHelper>(context, listen: false)
-            .updateTask(newTask);
-
-    widget.task == null
-        ? await Provider.of<DBHelper>(context, listen: false)
-            .insertTask(newTask)
             .then((value) {
             Navigator.pop(context);
             Navigator.popAndPushNamed(context, HomePage.routeName);

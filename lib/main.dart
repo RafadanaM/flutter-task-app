@@ -52,12 +52,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
-  List<StatelessWidget> _pages = [
-    TaskPage(),
-    SecondPage(),
-    ThirdPage(),
-    FourthPage()
-  ];
+  List<Widget> _pages = [TaskPage(), SecondPage(), ThirdPage(), FourthPage()];
 
   void _selectedPage(int index) {
     setState(() {
