@@ -1,4 +1,4 @@
-import 'package:circular_check_box/circular_check_box.dart';
+import 'package:roundcheckbox/roundcheckbox.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -62,13 +62,11 @@ class _GroceryListViewState extends State<GroceryListView> {
                             Theme(
                                 data:
                                     ThemeData(unselectedWidgetColor: darkGreen),
-                                child: CircularCheckBox(
-                                  checkColor: backgroundPrimary,
-                                  activeColor: darkGreen,
-                                  value: snapshot.data[index].isCompleted,
-                                  materialTapTargetSize:
-                                      MaterialTapTargetSize.padded,
-                                  onChanged: (value) => Provider.of<DBHelper>(
+                                child: RoundCheckBox(
+                                  checkedColor: backgroundPrimary,
+                                  uncheckedColor: darkGreen,
+                                  isChecked: snapshot.data[index].isCompleted,
+                                  onTap: (value) => Provider.of<DBHelper>(
                                           context,
                                           listen: false)
                                       .completeGrocery(snapshot.data[index]),

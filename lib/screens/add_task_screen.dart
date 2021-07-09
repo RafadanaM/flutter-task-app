@@ -368,7 +368,10 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
             Navigator.popAndPushNamed(context, HomePage.routeName);
           })
         : await Provider.of<DBHelper>(context, listen: false)
-            .updateTask(newTask);
+            .updateTask(newTask)
+            .then((value) {
+            Navigator.pop(context);
+          });
 
     // Navigator.pop(context);
   }
