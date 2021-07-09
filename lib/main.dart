@@ -69,7 +69,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     //final Size size = MediaQuery.of(context).size;
     return Scaffold(
-      extendBody: true,
+      extendBody: false,
       backgroundColor: Color(0xFFEFF6F4),
       body: IndexedStack(
         index: _selectedIndex,
