@@ -53,8 +53,9 @@ class TaskListView extends StatelessWidget {
                           date: formatter.format(snapshot.data[index].date),
                           isChecked: snapshot.data[index].isChecked,
                           onChanged: type == Type.incomplete
-                              ? (bool newVal) {
-                                  Provider.of<DBHelper>(context, listen: false)
+                              ? (bool newVal) async {
+                                  await Provider.of<DBHelper>(context,
+                                          listen: false)
                                       .completeTask(snapshot.data[index]);
                                 }
                               : (bool newVal) {},

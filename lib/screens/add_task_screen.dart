@@ -19,14 +19,15 @@ class AddTaskScreen extends StatefulWidget {
 }
 
 class _AddTaskScreenState extends State<AddTaskScreen> {
-  DateTime _pickedDate;
   DateTime _inputDateTime;
-  TimeOfDay _pickedTime;
+  DateTime _pickedDateTime;
   DateTime _reminder;
+  String _reminderText;
   double _height;
   double _width;
   bool _isAllowed = false;
-  bool _isReadOnly;
+  bool _isAddMode;
+  bool _isReadOnly = true;
   List<String> _minutes;
   final DateFormat formatter = DateFormat('MMM dd, HH:mm');
   TextEditingController titleController = TextEditingController();
@@ -38,30 +39,22 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     // print(widget.task.title);
     super.initState();
     _minutes = <String>[
-      '5 Minutes',
-      '10 Minutes',
-      '15 Minutes',
-      '20 Minutes',
-      '25 Minutes',
-      '30 Minutes',
+      '5 Minutes before',
+      '10 Minutes before',
+      '15 Minutes before',
+      '20 Minutes before',
+      '25 Minutes before',
+      '30 Minutes before',
     ];
-    _isReadOnly = widget.task != null;
-    _pickedDate = widget.task == null
-        ? DateTime.now()
-        : DateTime(widget.task.date.year, widget.task.date.month,
-            widget.task.date.day);
-    _pickedTime = widget.task == null
-        ? TimeOfDay.now()
-        : TimeOfDay(
-            hour: widget.task.date.hour, minute: widget.task.date.minute);
-    titleController.text = widget.task == null ? "" : widget.task.title;
-    descriptionController.text =
-        widget.task == null ? "" : widget.task.description;
-    _reminder = widget.task == null ? null : widget.task.reminder;
-    _inputDateTime = widget.task == null
-        ? DateTime(_pickedDate.year, _pickedDate.month, _pickedDate.day,
-            _pickedTime.hour, _pickedTime.minute)
-        : widget.task.date;
+    _isAddMode = widget.task == null;
+    _pickedDateTime = _isAddMode ? null : widget.task.date;
+    titleController.text = _isAddMode ? "" : widget.task.title;
+    descriptionController.text = _isAddMode ? "" : widget.task.description;
+    _reminder = _isAddMode ? null : widget.task.reminder;
+    _reminderText = _isAddMode
+        ? "Reminder"
+        : '${widget.task.date.difference(widget.task.reminder).inMinutes.toString()} Minutes before';
+    _inputDateTime = _isAddMode ? DateTime.now() : widget.task.date;
   }
 
   @override
@@ -71,7 +64,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
     return Scaffold(
       backgroundColor: Color(0xFF064B41),
-      bottomNavigationBar: widget.task == null
+      bottomNavigationBar: _isAddMode
           ? BottomAppBar()
           : BottomAppBar(
               elevation: 0,
@@ -145,7 +138,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                         ),
                         TextFormField(
                           validator: _checkTitle(titleController.text),
-                          readOnly: _isReadOnly,
+                          readOnly: _isReadOnly && !_isAddMode,
                           controller: titleController,
                           maxLines: 1,
                           style: TextStyle(
@@ -172,7 +165,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       TextField(
-                        readOnly: _isReadOnly,
+                        readOnly: _isReadOnly && !_isAddMode,
                         controller: descriptionController,
                         minLines: 2,
                         maxLines: 6,
@@ -183,7 +176,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                         cursorColor: Colors.grey,
                         decoration: InputDecoration(
                           border: InputBorder.none,
-                          hintText: widget.task == null || !_isReadOnly
+                          hintText: _isAddMode || !_isReadOnly
                               ? 'Description'
                               : "No description",
                           hintStyle: TextStyle(
@@ -204,7 +197,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                         titleSize: 18.0,
                         itemSpacing: 20.0,
                         onTap: () {
-                          if (!_isReadOnly) {
+                          if (!_isReadOnly || _isAddMode) {
                             FocusScope.of(context).unfocus();
                             _pickDateTime();
                           }
@@ -217,13 +210,12 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                         direction: Axis.horizontal,
                         iconData: Icons.notifications,
                         iconSize: 40,
-                        title: _reminder == null
-                            ? 'Reminder'
-                            : formatter.format(_reminder),
+                        title:
+                            _reminderText == null ? 'Reminder' : _reminderText,
                         titleSize: 18.0,
                         itemSpacing: 20.0,
                         onTap: () {
-                          if (!_isReadOnly) {
+                          if (!_isReadOnly || _isAddMode) {
                             FocusScope.of(context).unfocus();
                             _dropDown();
                           }
@@ -296,28 +288,35 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   _pickDateTime() async {
     DateTime date = await showDatePicker(
       context: context,
-      initialDate: _pickedDate,
+      initialDate: _isAddMode ? DateTime.now() : _pickedDateTime,
       firstDate: DateTime.now(),
       lastDate: DateTime(DateTime.now().year + 5),
     );
     if (date != null) {
-      setState(() {
-        _pickedDate = date;
-        print(date);
-      });
       TimeOfDay time = await showTimePicker(
         context: context,
-        initialTime: _pickedTime,
+        initialTime: _isAddMode
+            ? TimeOfDay.now()
+            : TimeOfDay(
+                hour: _pickedDateTime.hour, minute: _pickedDateTime.minute),
       );
       DateTime currentDateTime = DateTime.now();
       if (time != null) {
-        _inputDateTime = DateTime(_pickedDate.year, _pickedDate.month,
-            _pickedDate.day, time.hour, time.minute);
-        if (_inputDateTime.isAfter(currentDateTime))
+        DateTime selectedDateTime =
+            DateTime(date.year, date.month, date.day, time.hour, time.minute);
+        // _inputDateTime = DateTime(_pickedDate.year, _pickedDate.month,
+        //     _pickedDate.day, time.hour, time.minute);
+        if (selectedDateTime.isAfter(currentDateTime)) {
           setState(() {
-            _pickedTime = time;
+            _inputDateTime = selectedDateTime;
             _reminder = null;
           });
+        } else {
+          setState(() {
+            _inputDateTime = DateTime.now();
+            _reminder = null;
+          });
+        }
       }
     }
   }
@@ -329,22 +328,27 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
         items: _minutes,
         maxLongSide: 400,
         maxShortSide: 300,
-        // selectedItem: selectedUsState,
+        selectedItem: _reminderText,
         onChanged: (value) {
+          print(value);
           List<String> split = value.split(" ");
           int time = int.parse(split[0]);
           if (DateTime.now()
               .isBefore(_inputDateTime.subtract(Duration(minutes: time)))) {
             setState(() {
               _reminder = _inputDateTime.subtract(Duration(minutes: time));
+              _reminderText = value;
             });
           } else {
             setState(() {
               _reminder = null;
+              _reminderText = "Reminder";
             });
           }
         });
   }
+
+  _showAlert() {}
 
   // _calcReminder() {
   //   DateTime reminder = _inputDateTime.subtract(Duration(minutes: _reminder));

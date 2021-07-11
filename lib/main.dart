@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tasks_app/config/styles.dart';
 import 'package:tasks_app/screens/add_task_screen.dart';
 import 'package:tasks_app/screens/task_detail_screen.dart';
 import 'package:tasks_app/screens/task_page.dart';
@@ -22,7 +23,8 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => DBHelper(),
       child: MaterialApp(
-        title: 'Flutter Demo',
+        title: 'Task App',
+
         initialRoute: HomePage.routeName,
         onGenerateRoute: (RouteSettings settings) {
           var routes = <String, WidgetBuilder>{
