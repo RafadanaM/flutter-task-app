@@ -1,7 +1,6 @@
-import 'package:roundcheckbox/roundcheckbox.dart';
 import 'package:flutter/material.dart';
 import 'package:tasks_app/config/styles.dart';
-import 'package:tasks_app/config/type.dart';
+import 'package:tasks_app/config/enums.dart';
 
 class TaskListTile extends StatelessWidget {
   final String taskTitle;

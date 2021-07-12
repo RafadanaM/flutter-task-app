@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tasks_app/config/type.dart';
+import 'package:tasks_app/config/enums.dart';
 import 'package:tasks_app/widgets/task_list_view.dart';
 import 'package:tasks_app/config/styles.dart';
 

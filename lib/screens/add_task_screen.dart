@@ -1,6 +1,10 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tasks_app/config/enums.dart';
+import 'package:tasks_app/config/reminder.dart';
+import 'package:tasks_app/config/styles.dart';
 import 'package:tasks_app/database/db_helper.dart';
 import 'package:tasks_app/models/task.dart';
 import 'package:tasks_app/widgets/clickable_icon.dart';
@@ -25,6 +29,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   String _reminderText;
   double _height;
   double _width;
+  ReminderType _reminderType = ReminderType.minute;
   bool _isAllowed = false;
   bool _isAddMode;
   bool _isReadOnly = true;
@@ -46,12 +51,13 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
       '25 Minutes before',
       '30 Minutes before',
     ];
-    _isAddMode = widget.task == null;
+    _isAddMode = widget.task ?? true;
+    // print(Reminder.reminderList);
     _pickedDateTime = _isAddMode ? null : widget.task.date;
     titleController.text = _isAddMode ? "" : widget.task.title;
     descriptionController.text = _isAddMode ? "" : widget.task.description;
     _reminder = _isAddMode ? null : widget.task.reminder;
-    _reminderText = _isAddMode
+    _reminderText = _isAddMode || (_reminder ?? true)
         ? "Reminder"
         : '${widget.task.date.difference(widget.task.reminder).inMinutes.toString()} Minutes before';
     _inputDateTime = _isAddMode ? DateTime.now() : widget.task.date;
@@ -92,12 +98,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                       title: _isReadOnly ? 'Delete' : 'Save',
                       itemSpacing: 5.0,
                       onTap: () async {
-                        _isReadOnly
-                            ? await Provider.of<DBHelper>(context,
-                                    listen: false)
-                                .deleteTask(widget.task.id)
-                                .then((value) => Navigator.pop(context))
-                            : _submit();
+                        _isReadOnly ? await _showAlertDialog() : _submit();
                       },
                     ),
                   ],
@@ -206,20 +207,69 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                       // SizedBox(
                       //   height: _height * 0.05,
                       // ),
-                      ClickableIcon(
-                        direction: Axis.horizontal,
-                        iconData: Icons.notifications,
-                        iconSize: 40,
-                        title:
-                            _reminderText == null ? 'Reminder' : _reminderText,
-                        titleSize: 18.0,
-                        itemSpacing: 20.0,
-                        onTap: () {
-                          if (!_isReadOnly || _isAddMode) {
-                            FocusScope.of(context).unfocus();
-                            _dropDown();
-                          }
-                        },
+                      ExpansionTile(
+                        iconColor: lightGreen,
+                        collapsedIconColor: lightGreen,
+                        tilePadding: EdgeInsets.only(left: 0),
+                        expandedAlignment: Alignment.center,
+                        title: ClickableIcon(
+                          direction: Axis.horizontal,
+                          iconData: Icons.notifications,
+                          iconSize: 40,
+                          title: _reminderText == null
+                              ? 'Reminder'
+                              : _reminderText,
+                          titleSize: 18.0,
+                          itemSpacing: 20.0,
+                          onTap: () {
+                            if (!_isReadOnly || _isAddMode) {
+                              FocusScope.of(context).unfocus();
+                              _dropDown();
+                            }
+                          },
+                        ),
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                                color: lightGreen,
+                                borderRadius: BorderRadius.vertical(
+                                    bottom: Radius.circular(10))),
+                            height: 125,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Expanded(
+                                  child: ListWheelScrollView(
+                                      overAndUnderCenterOpacity: 0.6,
+                                      diameterRatio: 0.8,
+                                      useMagnifier: true,
+                                      magnification: 1.5,
+                                      itemExtent: 30,
+                                      children: reminderList[_reminderType]),
+                                ),
+                                Expanded(
+                                  child: ListWheelScrollView(
+                                      overAndUnderCenterOpacity: 0.6,
+                                      diameterRatio: 0.8,
+                                      useMagnifier: true,
+                                      magnification: 1.5,
+                                      itemExtent: 30,
+                                      children: reminderList.keys
+                                          .map((e) => Text(
+                                                describeEnum(e),
+                                                style: TextStyle(
+                                                    color: darkGreen,
+                                                    fontSize: 14,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ))
+                                          .toList()),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -304,19 +354,9 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
       if (time != null) {
         DateTime selectedDateTime =
             DateTime(date.year, date.month, date.day, time.hour, time.minute);
-        // _inputDateTime = DateTime(_pickedDate.year, _pickedDate.month,
-        //     _pickedDate.day, time.hour, time.minute);
-        if (selectedDateTime.isAfter(currentDateTime)) {
-          setState(() {
-            _inputDateTime = selectedDateTime;
-            _reminder = null;
-          });
-        } else {
-          setState(() {
-            _inputDateTime = DateTime.now();
-            _reminder = null;
-          });
-        }
+        setState(() {
+          _inputDateTime = selectedDateTime;
+        });
       }
     }
   }
@@ -348,7 +388,32 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
         });
   }
 
-  _showAlert() {}
+  Future<void> _showAlertDialog() async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text("Delete Confirmation"),
+        content: const SingleChildScrollView(
+          child: Text("Are you sure you want to delete this task?"),
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('CANCEL'),
+          ),
+          TextButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              await Provider.of<DBHelper>(context, listen: false)
+                  .deleteTask(widget.task.id)
+                  .then((value) => Navigator.pop(context));
+            },
+            child: const Text('DELETE'),
+          ),
+        ],
+      ),
+    );
+  }
 
   // _calcReminder() {
   //   DateTime reminder = _inputDateTime.subtract(Duration(minutes: _reminder));

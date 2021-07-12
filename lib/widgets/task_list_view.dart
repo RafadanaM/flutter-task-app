@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:tasks_app/config/enums.dart';
 
 import 'package:tasks_app/database/db_helper.dart';
 import 'package:tasks_app/models/task.dart';
 import 'package:tasks_app/screens/add_task_screen.dart';
 import 'package:tasks_app/widgets/task_list_tile.dart';
 import 'package:provider/provider.dart';
-import 'package:tasks_app/config/type.dart';
 
 class TaskListView extends StatelessWidget {
   final DateFormat formatter = DateFormat('dd MMMM yyyy');
