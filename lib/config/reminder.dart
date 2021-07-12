@@ -10,29 +10,8 @@ import 'package:tasks_app/config/styles.dart';
 //   };
 // }
 
-Map<ReminderType, List<Widget>> reminderList = <ReminderType, List<Widget>>{
-  ReminderType.minute: <Widget>[
-    for (var i = 0; i < 60; i += 1)
-      Text(
-        i.toString(),
-        style: TextStyle(
-            color: darkGreen, fontSize: 14, fontWeight: FontWeight.bold),
-      )
-  ],
-  ReminderType.hour: <Widget>[
-    for (var i = 0; i < 24; i += 1)
-      Text(
-        i.toString(),
-        style: TextStyle(
-            color: darkGreen, fontSize: 14, fontWeight: FontWeight.bold),
-      )
-  ],
-  ReminderType.day: <Widget>[
-    for (var i = 0; i < 366; i += 1)
-      Text(
-        i.toString(),
-        style: TextStyle(
-            color: darkGreen, fontSize: 14, fontWeight: FontWeight.bold),
-      )
-  ]
+Map<ReminderType, List<int>> reminderList = <ReminderType, List<int>>{
+  ReminderType.minute: <int>[for (var i = 0; i < 60; i += 1) i],
+  ReminderType.hour: <int>[for (var i = 0; i < 24; i += 1) i],
+  ReminderType.day: <int>[for (var i = 0; i < 365; i += 1) i],
 };

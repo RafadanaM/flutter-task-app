@@ -4,6 +4,7 @@ class Task {
   final String description;
   final DateTime date;
   final DateTime reminder;
+  final String reminderAsText;
   bool isCompleted;
   bool isChecked;
 
@@ -12,6 +13,7 @@ class Task {
       this.title,
       this.description,
       this.date,
+      this.reminderAsText,
       this.reminder,
       this.isChecked = false,
       this.isCompleted = false});
@@ -30,6 +32,7 @@ class Task {
       'title': title,
       'description': description,
       'date': date.toIso8601String(),
+      'reminderAsText': reminderAsText == null ? "no reminder" : reminderAsText,
       'reminder': reminder == null ? "no reminder" : reminder.toIso8601String(),
       'isChecked': isChecked ? 1 : 0,
       'isCompleted': isCompleted ? 1 : 0,

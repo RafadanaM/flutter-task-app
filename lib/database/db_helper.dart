@@ -35,6 +35,7 @@ class DBHelper extends ChangeNotifier {
       'title TEXT, '
       'description TEXT, '
       'date TEXT, '
+      'reminderAsText TEXT, '
       'reminder TEXT ,'
       'isChecked INTEGER, '
       'isCompleted INTEGER)',
@@ -80,6 +81,9 @@ class DBHelper extends ChangeNotifier {
         title: maps[index]['title'],
         description: maps[index]['description'],
         date: DateTime.parse(maps[index]['date']),
+        reminderAsText: maps[index]['reminderAsText'] == 'no reminder'
+            ? null
+            : maps[index]['reminderAsText'],
         reminder: maps[index]['reminder'] == 'no reminder'
             ? null
             : DateTime.parse(maps[index]['reminder']),
@@ -102,6 +106,7 @@ class DBHelper extends ChangeNotifier {
         title: maps[index]['title'],
         description: maps[index]['description'],
         date: DateTime.parse(maps[index]['date']),
+        reminderAsText: maps[index]['reminderAsText'],
         reminder: maps[index]['reminder'] == 'no reminder'
             ? null
             : DateTime.parse(maps[index]['reminder']),
@@ -124,6 +129,7 @@ class DBHelper extends ChangeNotifier {
         title: maps[index]['title'],
         description: maps[index]['description'],
         date: DateTime.parse(maps[index]['date']),
+        reminderAsText: maps[index]['reminderAsText'],
         reminder: maps[index]['reminder'] == 'no reminder'
             ? null
             : DateTime.parse(maps[index]['reminder']),

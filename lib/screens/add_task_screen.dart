@@ -23,43 +23,49 @@ class AddTaskScreen extends StatefulWidget {
 }
 
 class _AddTaskScreenState extends State<AddTaskScreen> {
+  static const itemExtent = 30.0;
   DateTime _inputDateTime;
   DateTime _pickedDateTime;
   DateTime _reminder;
-  String _reminderText;
+  int _reminderValue = 0;
   double _height;
   double _width;
   ReminderType _reminderType = ReminderType.minute;
   bool _isAllowed = false;
   bool _isAddMode;
   bool _isReadOnly = true;
-  List<String> _minutes;
+
   final DateFormat formatter = DateFormat('MMM dd, HH:mm');
+  FixedExtentScrollController _controllerReminderValue;
+  FixedExtentScrollController _controllerReminderType;
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
 
   @override
   void initState() {
     //final Task task = ModalRoute.of(context).settings.arguments;
-    // print(widget.task.title);
+
     super.initState();
-    _minutes = <String>[
-      '5 Minutes before',
-      '10 Minutes before',
-      '15 Minutes before',
-      '20 Minutes before',
-      '25 Minutes before',
-      '30 Minutes before',
-    ];
-    _isAddMode = widget.task ?? true;
-    // print(Reminder.reminderList);
+    _isAddMode = widget.task == null;
     _pickedDateTime = _isAddMode ? null : widget.task.date;
     titleController.text = _isAddMode ? "" : widget.task.title;
     descriptionController.text = _isAddMode ? "" : widget.task.description;
     _reminder = _isAddMode ? null : widget.task.reminder;
-    _reminderText = _isAddMode || (_reminder ?? true)
-        ? "Reminder"
-        : '${widget.task.date.difference(widget.task.reminder).inMinutes.toString()} Minutes before';
+    _reminderValue = _isAddMode || widget.task.reminderAsText == null
+        ? 0
+        : int.parse(widget.task.reminderAsText.split(" ")[0]);
+
+    _reminderType = _isAddMode || widget.task.reminderAsText == null
+        ? ReminderType.minute
+        : ReminderType.values.firstWhere(
+            (element) =>
+                describeEnum(element) ==
+                widget.task.reminderAsText.split(" ")[1],
+            orElse: () => ReminderType.minute);
+    _controllerReminderType = FixedExtentScrollController(
+        initialItem: ReminderType.values.indexOf(_reminderType));
+    _controllerReminderValue =
+        FixedExtentScrollController(initialItem: _reminderValue);
     _inputDateTime = _isAddMode ? DateTime.now() : widget.task.date;
   }
 
@@ -207,77 +213,132 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                       // SizedBox(
                       //   height: _height * 0.05,
                       // ),
-                      ExpansionTile(
-                        iconColor: lightGreen,
-                        collapsedIconColor: lightGreen,
-                        tilePadding: EdgeInsets.only(left: 0),
-                        expandedAlignment: Alignment.center,
-                        title: ClickableIcon(
-                          direction: Axis.horizontal,
-                          iconData: Icons.notifications,
-                          iconSize: 40,
-                          title: _reminderText == null
-                              ? 'Reminder'
-                              : _reminderText,
-                          titleSize: 18.0,
-                          itemSpacing: 20.0,
-                          onTap: () {
-                            if (!_isReadOnly || _isAddMode) {
-                              FocusScope.of(context).unfocus();
-                              _dropDown();
-                            }
-                          },
-                        ),
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                                color: lightGreen,
-                                borderRadius: BorderRadius.vertical(
-                                    bottom: Radius.circular(10))),
-                            height: 125,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
+                      _isReadOnly && !_isAddMode
+                          ? ClickableIcon(
+                              direction: Axis.horizontal,
+                              iconData: Icons.notifications,
+                              iconSize: 40,
+                              title: _reminder == null
+                                  ? 'Reminder'
+                                  : formatter.format(_reminder),
+                              titleSize: 18.0,
+                              itemSpacing: 20.0,
+                              onTap: () {},
+                            )
+                          : ExpansionTile(
+                              iconColor: lightGreen,
+                              collapsedIconColor: lightGreen,
+                              tilePadding: EdgeInsets.only(left: 0),
+                              expandedAlignment: Alignment.center,
+                              onExpansionChanged: (value) {
+                                if (!value)
+                                  _calculateReminder(
+                                      _reminderType, _reminderValue);
+                              },
+                              title: ClickableIcon(
+                                direction: Axis.horizontal,
+                                iconData: Icons.notifications,
+                                iconSize: 40,
+                                title: _reminder == null
+                                    ? 'Reminder'
+                                    : formatter.format(_reminder),
+                                titleSize: 18.0,
+                                itemSpacing: 20.0,
+                                onTap: () {},
+                              ),
                               children: [
-                                Expanded(
-                                  child: ListWheelScrollView(
-                                      overAndUnderCenterOpacity: 0.6,
-                                      diameterRatio: 0.8,
-                                      useMagnifier: true,
-                                      magnification: 1.5,
-                                      itemExtent: 30,
-                                      children: reminderList[_reminderType]),
-                                ),
-                                Expanded(
-                                  child: ListWheelScrollView(
-                                      overAndUnderCenterOpacity: 0.6,
-                                      diameterRatio: 0.8,
-                                      useMagnifier: true,
-                                      magnification: 1.5,
-                                      itemExtent: 30,
-                                      children: reminderList.keys
-                                          .map((e) => Text(
-                                                describeEnum(e),
-                                                style: TextStyle(
-                                                    color: darkGreen,
-                                                    fontSize: 14,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ))
-                                          .toList()),
+                                Container(
+                                  decoration: BoxDecoration(
+                                      color: lightGreen,
+                                      borderRadius: BorderRadius.vertical(
+                                          bottom: Radius.circular(10))),
+                                  height: 125,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Expanded(
+                                        child: ListWheelScrollView(
+                                          controller: _controllerReminderValue,
+                                          overAndUnderCenterOpacity: 0.6,
+                                          diameterRatio: 0.8,
+                                          useMagnifier: true,
+                                          magnification: 1.5,
+                                          itemExtent: itemExtent,
+                                          physics: FixedExtentScrollPhysics(),
+                                          children: reminderList[_reminderType]
+                                              .map((e) => Text(
+                                                    e.toString(),
+                                                    style: TextStyle(
+                                                        color: darkGreen,
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ))
+                                              .toList(),
+                                          onSelectedItemChanged: (value) {
+                                            setState(() {
+                                              _reminderValue =
+                                                  reminderList[_reminderType]
+                                                      [value];
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: ListWheelScrollView(
+                                          controller: _controllerReminderType,
+                                          overAndUnderCenterOpacity: 0.6,
+                                          diameterRatio: 0.8,
+                                          useMagnifier: true,
+                                          magnification: 1.5,
+                                          itemExtent: itemExtent,
+                                          physics: FixedExtentScrollPhysics(),
+                                          children: reminderList.keys
+                                              .map((e) => Text(
+                                                    describeEnum(e),
+                                                    style: TextStyle(
+                                                        color: darkGreen,
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ))
+                                              .toList(),
+                                          onSelectedItemChanged: (value) {
+                                            int lastItem = reminderList[
+                                                    ReminderType.values[value]]
+                                                .last;
+                                            setState(() {
+                                              _reminderType =
+                                                  ReminderType.values[value];
+                                            });
+                                            if (_reminderValue != null &&
+                                                (_reminderValue > lastItem)) {
+                                              setState(() {
+                                                _reminderValue = lastItem;
+                                              });
+                                              _controllerReminderValue
+                                                  .jumpToItem(lastItem);
+                                            }
+                                            _controllerReminderValue.jumpTo(
+                                                (itemExtent + 0.001) *
+                                                    _reminderValue);
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),
-                          ),
-                        ],
-                      ),
                     ],
                   ),
                 ),
               ],
             ),
           ),
-          widget.task == null
+          _isAddMode
               ? Container(
                   margin: EdgeInsets.all(20),
                   child: Align(
@@ -323,7 +384,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   }
 
   _checkTitle(String title) {
-    print(title);
     if (title.isNotEmpty) {
       setState(() {
         _isAllowed = true;
@@ -350,7 +410,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
             : TimeOfDay(
                 hour: _pickedDateTime.hour, minute: _pickedDateTime.minute),
       );
-      DateTime currentDateTime = DateTime.now();
       if (time != null) {
         DateTime selectedDateTime =
             DateTime(date.year, date.month, date.day, time.hour, time.minute);
@@ -361,31 +420,32 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     }
   }
 
-  _dropDown() {
-    return showMaterialScrollPicker(
-        context: context,
-        title: "Reminder",
-        items: _minutes,
-        maxLongSide: 400,
-        maxShortSide: 300,
-        selectedItem: _reminderText,
-        onChanged: (value) {
-          print(value);
-          List<String> split = value.split(" ");
-          int time = int.parse(split[0]);
-          if (DateTime.now()
-              .isBefore(_inputDateTime.subtract(Duration(minutes: time)))) {
-            setState(() {
-              _reminder = _inputDateTime.subtract(Duration(minutes: time));
-              _reminderText = value;
-            });
-          } else {
-            setState(() {
-              _reminder = null;
-              _reminderText = "Reminder";
-            });
-          }
+  _calculateReminder(ReminderType reminderType, int reminderValue) {
+    if (reminderType != null || reminderValue != null) {
+      if (reminderValue == 0) {
+        setState(() {
+          _reminder = null;
         });
+        return;
+      }
+      var reminder;
+      switch (reminderType) {
+        case ReminderType.minute:
+          reminder = _inputDateTime.subtract(Duration(minutes: reminderValue));
+          break;
+        case ReminderType.hour:
+          reminder = _inputDateTime.subtract(Duration(hours: reminderValue));
+          break;
+        case ReminderType.day:
+          reminder = _inputDateTime.subtract(Duration(days: reminderValue));
+          break;
+        default:
+          return;
+      }
+      setState(() {
+        _reminder = reminder;
+      });
+    }
   }
 
   Future<void> _showAlertDialog() async {
@@ -415,21 +475,62 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     );
   }
 
-  // _calcReminder() {
-  //   DateTime reminder = _inputDateTime.subtract(Duration(minutes: _reminder));
-  //   return formatter.format(reminder);
-  // }
+  Future<void> _showErrorDialog(String errorType, String errorMsg) async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: Text("Invalid $errorType"),
+        content: SingleChildScrollView(
+          child: Text(errorMsg),
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  final snackBar = SnackBar(
+    content: Text(
+        "Reminder is set before current time. No notification will be shown"),
+    width: 280,
+    padding: const EdgeInsets.all(8),
+    behavior: SnackBarBehavior.floating,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(5.0),
+    ),
+  );
 
   // TODO make sure that Title exists and check for input time against current time
   _submit() async {
+    _calculateReminder(_reminderType, _reminderValue);
+
+    if (titleController.text.isEmpty) {
+      _showErrorDialog("Title", "Title cannot be empty");
+      return;
+    }
+
+    if (_inputDateTime.isBefore(DateTime.now())) {
+      _showErrorDialog("Due Date", "Due date cannot be before current time");
+      return;
+    }
+
+    if (_reminder.isBefore(DateTime.now())) {
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+
     Task newTask = Task(
         id: widget.task == null ? null : widget.task.id,
         title: titleController.text,
         description: descriptionController.text,
         date: _inputDateTime,
+        reminderAsText: '$_reminderValue ${describeEnum(_reminderType)}',
         reminder: _reminder);
 
-    widget.task == null
+    _isAddMode
         ? await Provider.of<DBHelper>(context, listen: false)
             .insertTask(newTask)
             .then((value) {
