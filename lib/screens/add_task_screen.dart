@@ -416,6 +416,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
         setState(() {
           _inputDateTime = selectedDateTime;
         });
+        _calculateReminder(_reminderType, _reminderValue);
       }
     }
   }
@@ -518,7 +519,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
       return;
     }
 
-    if (_reminder.isBefore(DateTime.now())) {
+    if (_reminder != null && _reminder.isBefore(DateTime.now())) {
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
 

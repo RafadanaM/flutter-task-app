@@ -74,7 +74,8 @@ class DBHelper extends ChangeNotifier {
   Future<List<Task>> tasks() async {
     final Database db = await database;
 
-    final List<Map<String, dynamic>> maps = await db.query('tasks');
+    final List<Map<String, dynamic>> maps =
+        await db.query('tasks', orderBy: 'date DESC');
     return List.generate(maps.length, (index) {
       return Task(
         id: maps[index]['id'],
@@ -98,6 +99,7 @@ class DBHelper extends ChangeNotifier {
     final List<Map<String, dynamic>> maps = await db.query(
       'tasks',
       where: "isCompleted = ?",
+      orderBy: 'date ASC',
       whereArgs: [0],
     );
     return List.generate(maps.length, (index) {
@@ -121,6 +123,7 @@ class DBHelper extends ChangeNotifier {
     final List<Map<String, dynamic>> maps = await db.query(
       'tasks',
       where: "isCompleted = ?",
+      orderBy: 'date ASC',
       whereArgs: [1],
     );
     return List.generate(maps.length, (index) {
