@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tasks_app/config/styles.dart';
+import 'package:tasks_app/widgets/header.dart';
 import 'package:tasks_app/widgets/task_list_view.dart';
 import 'package:tasks_app/config/type.dart';
 
@@ -18,13 +19,7 @@ class ThirdPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text(
-              'Completed',
-              style: TextStyle(
-                fontSize: 36.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            Header(title: 'Completed Tasks'),
             Expanded(
               child: TaskListView(
                 type: Type.complete,

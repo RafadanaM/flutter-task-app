@@ -5,6 +5,7 @@ import 'package:tasks_app/database/db_helper.dart';
 import 'package:tasks_app/models/grocery.dart';
 import 'package:tasks_app/widgets/clickable_icon.dart';
 import 'package:tasks_app/widgets/grocery_list_view.dart';
+import 'package:tasks_app/widgets/header.dart';
 
 class SecondPage extends StatefulWidget {
   static const routeName = '/second';
@@ -39,15 +40,12 @@ class _SecondPageState extends State<SecondPage> {
           children: <Widget>[
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Groceries',
-                  style: TextStyle(
-                    fontSize: 36.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                Header(title: 'Groceries'),
                 IconButton(
+                  padding: EdgeInsets.only(top: 8),
+                  alignment: Alignment.topCenter,
                   icon: const Icon(Icons.more_vert),
                   tooltip: 'Show options menu',
                   onPressed: () {
@@ -56,9 +54,6 @@ class _SecondPageState extends State<SecondPage> {
                   iconSize: 28,
                 ),
               ],
-            ),
-            SizedBox(
-              height: 15,
             ),
             Expanded(
               child: Stack(
