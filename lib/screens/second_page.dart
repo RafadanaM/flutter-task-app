@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:tasks_app/config/styles.dart';
 import 'package:tasks_app/database/db_helper.dart';
 import 'package:tasks_app/models/grocery.dart';
+import 'package:tasks_app/widgets/clickable_icon.dart';
 import 'package:tasks_app/widgets/grocery_list_view.dart';
 
 class SecondPage extends StatefulWidget {
@@ -13,24 +14,12 @@ class SecondPage extends StatefulWidget {
 }
 
 class _SecondPageState extends State<SecondPage> {
-  double _bottomPaddingKeyboard = 80;
   bool _isAllowed = false;
   TextEditingController groceryController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    // KeyboardVisibilityNotification().addNewListener(
-    //   onChange: (bool visible) {
-    //     if (visible) {
-    //       setState(() {
-    //         _bottomPaddingKeyboard = 0;
-    //       });
-    //     } else {
-    //       _bottomPaddingKeyboard = 80;
-    //     }
-    //   },
-    // );
   }
 
   @override
@@ -44,31 +33,33 @@ class _SecondPageState extends State<SecondPage> {
           top: _height * 0.075,
           left: _width * 0.025,
           right: _width * 0.025,
-          bottom: _bottomPaddingKeyboard,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text(
-              'Groceries',
-              style: TextStyle(
-                fontSize: 36.0,
-                fontWeight: FontWeight.bold,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Groceries',
+                  style: TextStyle(
+                    fontSize: 36.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.more_vert),
+                  tooltip: 'Show options menu',
+                  onPressed: () {
+                    _showMenu();
+                  },
+                  iconSize: 28,
+                ),
+              ],
             ),
-            // FlatButton(
-            //   child: Container(
-            //     height: 75.0,
-            //     width: 75.0,
-            //     color: darkGreen,
-            //   ),
-            //   onPressed: () {
-            //     Provider.of<DBHelper>(context, listen: false)
-            //         .insertGrocery(Grocery(
-            //       title: 'Balls',
-            //     ));
-            //   },
-            // ),
+            SizedBox(
+              height: 15,
+            ),
             Expanded(
               child: Stack(
                 children: <Widget>[
@@ -80,6 +71,9 @@ class _SecondPageState extends State<SecondPage> {
                         horizontal: 15,
                         vertical: 3,
                       ),
+                      margin: EdgeInsets.only(
+                        bottom: 10,
+                      ),
                       decoration: BoxDecoration(
                         color: orange,
                         borderRadius: BorderRadius.circular(10),
@@ -90,7 +84,6 @@ class _SecondPageState extends State<SecondPage> {
                           Container(
                             width: MediaQuery.of(context).size.width * 0.5,
                             child: TextFormField(
-                              // validator: _checkTitle(groceryController.text),
                               controller: groceryController,
                               maxLines: 1,
                               style: TextStyle(
@@ -100,30 +93,32 @@ class _SecondPageState extends State<SecondPage> {
                               cursorColor: Colors.white,
                               decoration: InputDecoration(
                                 border: InputBorder.none,
-                                hintText: 'insert item..',
+                                hintText: 'Insert grocery item..',
                                 hintStyle: TextStyle(
-                                    color: Colors.white,
+                                    color: lightOrange,
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 20.0),
+                                    fontSize: 20.0,
+                                  ),
                               ),
                             ),
                           ),
                           Container(
                             height: 30,
                             width: 30,
-                            child: OutlineButton(
-                              color: Colors.transparent,
-                              padding: EdgeInsets.zero,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
+                            child: OutlinedButton(
+                              style: OutlinedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                side: BorderSide(
+                                  color: Colors.white,
+                                  width: 2,
+                                ),
+                                padding: EdgeInsets.zero,
                               ),
                               onPressed: () {
                                 _submit();
                               },
-                              borderSide: BorderSide(
-                                color: Colors.white,
-                                width: 2,
-                              ),
                               child: Icon(
                                 Icons.add,
                                 size: 30,
@@ -138,9 +133,6 @@ class _SecondPageState extends State<SecondPage> {
                 ],
               ),
             ),
-            // SizedBox(
-            //   height: 80,
-            // ),
           ],
         ),
       ),
@@ -174,15 +166,148 @@ class _SecondPageState extends State<SecondPage> {
     }
   }
 
-  _checkKeyboard() {
-    if (MediaQuery.of(context).viewInsets.bottom == 0) {
-      setState(() {
-        _bottomPaddingKeyboard = 80;
-      });
-    } else {
-      setState(() {
-        _bottomPaddingKeyboard = 0;
-      });
-    }
+  _showMenu() {
+    showModalBottomSheet<void>(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      context: context,
+      builder: (BuildContext context) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: EdgeInsets.only(
+                top: 10,
+                left: 10,
+                right: 10,
+                bottom: 20,
+              ),
+              decoration: BoxDecoration(
+                color: darkerGreen,
+                borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+              ),
+              alignment: Alignment.topLeft,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Align(
+                    child: Container(
+                      height: 4,
+                      width: 25,
+                      margin: EdgeInsets.only(bottom: 15),
+                      decoration: BoxDecoration(
+                        color: lightGreen,
+                        borderRadius: BorderRadius.circular(5)
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 10,),
+                    decoration: BoxDecoration(
+                      color: darkestGreen,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextButton(
+                      style: TextButton.styleFrom(
+                        minimumSize: Size(double.infinity, 30),
+                        alignment: Alignment.centerLeft,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 12,
+                        ),
+                      ),
+                      child: Text(
+                        'Clear all items',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20.0,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                      onPressed: () {
+                        _deleteAll();
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 10,),
+                    decoration: BoxDecoration(
+                      color: darkestGreen,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextButton(
+                      style: TextButton.styleFrom(
+                        minimumSize: Size(double.infinity, 30),
+                        alignment: Alignment.centerLeft,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 12,
+                        ),
+                      ),
+                      child: Text(
+                        'Clear checklisted items',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20.0,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                      onPressed: () {
+                        _deleteCompleted();
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 10,),
+                    decoration: BoxDecoration(
+                      color: darkestGreen,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextButton(
+                      style: TextButton.styleFrom(
+                        minimumSize: Size(double.infinity, 30),
+                        alignment: Alignment.centerLeft,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 12,
+                        ),
+                      ),
+                      child: Text(
+                        'Uncheck all items',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20.0,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                      onPressed: () {
+                        _uncheckAll();
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      }
+    );
+  }
+
+  _deleteAll() async {
+    await Provider.of<DBHelper>(context, listen: false)
+          .deleteAllGrocery();
+  }
+  
+  _deleteCompleted() async {
+    await Provider.of<DBHelper>(context, listen: false)
+          .deleteCompletedGrocery(true);
+  }
+
+  _uncheckAll() async {
+    await Provider.of<DBHelper>(context, listen: false)
+          .uncheckAllGroceries();
   }
 }

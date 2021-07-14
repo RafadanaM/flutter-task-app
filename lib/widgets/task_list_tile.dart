@@ -59,16 +59,17 @@ class TaskListTile extends StatelessWidget {
             unselectedWidgetColor: Color(0xFF73A99C),
             materialTapTargetSize: MaterialTapTargetSize.padded),
         child: RoundCheckBox(
-          checkedColor: Color(0xFF73A99C),
+          checkedColor: lightGreen,
           checkedWidget: Icon(
             Icons.check,
-            size: 18,
-            color: Color(0xFF1F6355),
+            size: 20,
+            color: darkGreen,
           ),
-          uncheckedColor: Color(0xFF1F6355),
-          size: 24,
+          uncheckedColor: darkGreen,
+          borderColor: lightGreen,
+          size: 28,
           isChecked: isChecked,
-          onTap: onChanged,
+          onTap: type == Type.incomplete ? onChanged : null,
         ),
       ),
     );

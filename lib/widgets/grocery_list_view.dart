@@ -29,7 +29,9 @@ class _GroceryListViewState extends State<GroceryListView> {
                   );
                 }
                 return ListView.separated(
-                  padding: EdgeInsets.symmetric(vertical: 22),
+                  padding: EdgeInsets.only(
+                    bottom: 22,
+                  ),
                   separatorBuilder: (BuildContext context, int index) {
                     return Container(
                       margin: EdgeInsets.zero,
@@ -40,7 +42,8 @@ class _GroceryListViewState extends State<GroceryListView> {
                     );
                   },
                   itemBuilder: (context, index) {
-                    return Container(
+                    if (index < snapshot.data.length) {
+                      return Container(
                         height: 50,
                         padding: EdgeInsets.symmetric(
                           horizontal: 10.0,
@@ -61,11 +64,18 @@ class _GroceryListViewState extends State<GroceryListView> {
                             ),
                             Theme(
                                 data:
-                                    ThemeData(unselectedWidgetColor: darkGreen),
+                                    ThemeData(unselectedWidgetColor: lightGreen),
                                 child: RoundCheckBox(
-                                  checkedColor: backgroundPrimary,
-                                  uncheckedColor: darkGreen,
+                                  checkedColor: darkGreen,
+                                  uncheckedColor: backgroundPrimary,
+                                  borderColor: darkGreen,
+                                  size: 28,
                                   isChecked: snapshot.data[index].isCompleted,
+                                  checkedWidget: Icon(
+                                    Icons.check,
+                                    size: 20,
+                                    color: backgroundPrimary,
+                                  ),
                                   onTap: (value) => Provider.of<DBHelper>(
                                           context,
                                           listen: false)
@@ -73,8 +83,11 @@ class _GroceryListViewState extends State<GroceryListView> {
                                 )),
                           ],
                         ));
+                    }
+                    index -= 1;
+                    return SizedBox(height: 35);
                   },
-                  itemCount: snapshot.data.length,
+                  itemCount: snapshot.data.length + 1,
                 );
               }
               return Center(

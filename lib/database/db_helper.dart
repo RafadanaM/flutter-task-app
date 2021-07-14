@@ -165,6 +165,8 @@ class DBHelper extends ChangeNotifier {
         await db.rawQuery('SELECT COUNT(*) FROM tasks'));
   }
 
+  // Groceries
+
   //insert to database
   Future<void> insertGrocery(Grocery grocery) async {
     final Database db = await database;
@@ -189,6 +191,36 @@ class DBHelper extends ChangeNotifier {
       'groceries',
       where: 'id = ?',
       whereArgs: [id],
+    );
+    notifyListeners();
+  }
+
+  Future<void> deleteAllGrocery() async {
+    final Database db = await database;
+
+    await db.delete(
+      'groceries',
+    );
+    notifyListeners();
+  }
+
+  Future<void> deleteCompletedGrocery(bool isCompleted) async {
+    final Database db = await database;
+
+    await db.delete(
+      'groceries',
+      where: 'isCompleted = ?',
+      whereArgs: [isCompleted ? 1 : 0],
+    );
+    notifyListeners();
+  }
+
+  Future<void> uncheckAllGroceries() async {
+    final Database db = await database;
+
+    await db.update(
+      'groceries', 
+      {'isCompleted': 0}
     );
     notifyListeners();
   }

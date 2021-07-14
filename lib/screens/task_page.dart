@@ -29,9 +29,6 @@ class TaskPage extends StatelessWidget {
                 type: Type.incomplete,
               ),
             ),
-            SizedBox(
-              height: 80,
-            )
           ],
         ),
       ),
