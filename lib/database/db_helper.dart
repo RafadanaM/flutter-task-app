@@ -37,7 +37,6 @@ class DBHelper extends ChangeNotifier {
       'date TEXT, '
       'reminderAsText TEXT, '
       'reminder TEXT ,'
-      'isChecked INTEGER, '
       'isCompleted INTEGER)',
     );
     db.execute(
@@ -88,7 +87,6 @@ class DBHelper extends ChangeNotifier {
         reminder: maps[index]['reminder'] == 'no reminder'
             ? null
             : DateTime.parse(maps[index]['reminder']),
-        isChecked: maps[index]['isChecked'] == 1 ? true : false,
         isCompleted: maps[index]['isCompleted'] == 1 ? true : false,
       );
     });
@@ -112,7 +110,6 @@ class DBHelper extends ChangeNotifier {
         reminder: maps[index]['reminder'] == 'no reminder'
             ? null
             : DateTime.parse(maps[index]['reminder']),
-        isChecked: maps[index]['isChecked'] == 1 ? true : false,
         isCompleted: maps[index]['isCompleted'] == 1 ? true : false,
       );
     });
@@ -136,7 +133,6 @@ class DBHelper extends ChangeNotifier {
         reminder: maps[index]['reminder'] == 'no reminder'
             ? null
             : DateTime.parse(maps[index]['reminder']),
-        isChecked: maps[index]['isChecked'] == 1 ? true : false,
         isCompleted: maps[index]['isCompleted'] == 1 ? true : false,
       );
     });
@@ -145,18 +141,15 @@ class DBHelper extends ChangeNotifier {
   //change complete task
   Future<void> completeTask(Task task) async {
     final Database db = await database;
-    task.toggleChecked();
+
+    task.toggleCompleted();
     await db
         .update('tasks', task.toMap(), where: 'id = ?', whereArgs: [task.id]);
     notifyListeners();
-    Timer(Duration(milliseconds: 750), () async {
-      task.toggleCompleted();
-      await db
-          .update('tasks', task.toMap(), where: 'id = ?', whereArgs: [task.id]);
-      notifyListeners();
-    });
+  }
 
-    final List<Map<String, dynamic>> maps = await db.query('tasks');
+  void notify() async {
+    notifyListeners();
   }
 
   Future<void> updateTask(Task task) async {
@@ -164,7 +157,6 @@ class DBHelper extends ChangeNotifier {
     await db
         .update('tasks', task.toMap(), where: 'id = ?', whereArgs: [task.id]);
     notifyListeners();
-    final List<Map<String, dynamic>> maps = await db.query('tasks');
   }
 
   //get row count

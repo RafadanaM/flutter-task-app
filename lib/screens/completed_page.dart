@@ -3,13 +3,14 @@ import 'package:tasks_app/config/styles.dart';
 import 'package:tasks_app/widgets/task_list_view.dart';
 import 'package:tasks_app/config/enums.dart';
 
-class ThirdPage extends StatelessWidget {
+class CompletedPage extends StatelessWidget {
   static const routeName = '/completed';
 
   @override
   Widget build(BuildContext context) {
     double _height = MediaQuery.of(context).size.height;
     double _width = MediaQuery.of(context).size.width;
+    print('RENDERED');
     return Scaffold(
       backgroundColor: backgroundPrimary,
       body: Padding(

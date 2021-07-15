@@ -9,6 +9,7 @@ class SecondPage extends StatelessWidget {
   static const routeName = '/second';
   @override
   Widget build(BuildContext context) {
+    print('rendered');
     double _height = MediaQuery.of(context).size.height;
     double _width = MediaQuery.of(context).size.width;
     return Scaffold(

@@ -5,6 +5,10 @@ import 'package:tasks_app/config/styles.dart';
 
 class TaskPage extends StatelessWidget {
   static const routeName = '/task';
+  final GlobalKey<AnimatedListState> listKey;
+
+  TaskPage({@required this.listKey});
+
   @override
   Widget build(BuildContext context) {
     double _height = MediaQuery.of(context).size.height;
@@ -26,6 +30,7 @@ class TaskPage extends StatelessWidget {
             ),
             Expanded(
               child: TaskListView(
+                listKey: listKey,
                 type: Type.incomplete,
               ),
             ),

@@ -53,36 +53,58 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _selectedIndex = 0;
-  List<StatelessWidget> _pages = [
-    TaskPage(),
-    SecondPage(),
-    ThirdPage(),
-    FourthPage()
-  ];
+  GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
 
-  void _selectedPage(int index) {
+  PageController _pageController = PageController();
+
+  int _selectedIndex = 0;
+  List<StatelessWidget> _pages;
+
+  void _onPageChanged(int index) {
     setState(() {
       _selectedIndex = index;
     });
   }
 
+  void _selectedPage(int index) {
+    _pageController.jumpToPage(index);
+  }
+
+  @override
+  void initState() {
+    //final Task task = ModalRoute.of(context).settings.arguments;
+
+    super.initState();
+    _pages = [
+      TaskPage(
+        listKey: _listKey,
+      ),
+      SecondPage(),
+      CompletedPage(),
+      FourthPage()
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     //final Size size = MediaQuery.of(context).size;
+
     return Scaffold(
       extendBody: false,
       backgroundColor: Color(0xFFEFF6F4),
-      body: IndexedStack(
-        index: _selectedIndex,
+      body: PageView(
+        controller: _pageController,
         children: _pages,
+        onPageChanged: _onPageChanged,
+        physics: NeverScrollableScrollPhysics(),
       ),
       floatingActionButton: _selectedIndex == 1
           ? null
           : FloatingActionButton(
               backgroundColor: Color(0xFFFF844C),
               onPressed: () {
-                Navigator.pushNamed(context, AddTaskScreen.routeName);
+                Navigator.pushNamed(context, AddTaskScreen.routeName,
+                    arguments: {'listKey': _listKey});
               },
               child: Icon(
                 Icons.add,

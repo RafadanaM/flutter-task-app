@@ -15,8 +15,8 @@ import 'package:tasks_app/main.dart';
 class AddTaskScreen extends StatefulWidget {
   static const routeName = '/add';
 
-  final Task task;
-  const AddTaskScreen(this.task);
+  final Map<String, dynamic> args;
+  const AddTaskScreen(this.args);
 
   @override
   _AddTaskScreenState createState() => _AddTaskScreenState();
@@ -34,6 +34,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   bool _isAllowed = false;
   bool _isAddMode;
   bool _isReadOnly = true;
+  GlobalKey<AnimatedListState> _listKey;
 
   final DateFormat formatter = DateFormat('MMM dd, HH:mm');
   FixedExtentScrollController _controllerReminderValue;
@@ -46,27 +47,29 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     //final Task task = ModalRoute.of(context).settings.arguments;
 
     super.initState();
-    _isAddMode = widget.task == null;
-    _pickedDateTime = _isAddMode ? null : widget.task.date;
-    titleController.text = _isAddMode ? "" : widget.task.title;
-    descriptionController.text = _isAddMode ? "" : widget.task.description;
-    _reminder = _isAddMode ? null : widget.task.reminder;
-    _reminderValue = _isAddMode || widget.task.reminderAsText == null
+    _listKey = widget.args['listKey'];
+    _isAddMode = widget.args['task'] == null;
+    _pickedDateTime = _isAddMode ? null : widget.args['task'].date;
+    titleController.text = _isAddMode ? "" : widget.args['task'].title;
+    descriptionController.text =
+        _isAddMode ? "" : widget.args['task'].description;
+    _reminder = _isAddMode ? null : widget.args['task'].reminder;
+    _reminderValue = _isAddMode || widget.args['task'].reminderAsText == null
         ? 0
-        : int.parse(widget.task.reminderAsText.split(" ")[0]);
+        : int.parse(widget.args['task'].reminderAsText.split(" ")[0]);
 
-    _reminderType = _isAddMode || widget.task.reminderAsText == null
+    _reminderType = _isAddMode || widget.args['task'].reminderAsText == null
         ? ReminderType.minute
         : ReminderType.values.firstWhere(
             (element) =>
                 describeEnum(element) ==
-                widget.task.reminderAsText.split(" ")[1],
+                widget.args['task'].reminderAsText.split(" ")[1],
             orElse: () => ReminderType.minute);
     _controllerReminderType = FixedExtentScrollController(
         initialItem: ReminderType.values.indexOf(_reminderType));
     _controllerReminderValue =
         FixedExtentScrollController(initialItem: _reminderValue);
-    _inputDateTime = _isAddMode ? DateTime.now() : widget.task.date;
+    _inputDateTime = _isAddMode ? DateTime.now() : widget.args['task'].date;
   }
 
   @override
@@ -86,7 +89,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
-                    if (!widget.task.isCompleted)
+                    if (!widget.args['task'].isCompleted)
                       ClickableIcon(
                         direction: Axis.vertical,
                         iconData: _isReadOnly ? Icons.edit : Icons.clear,
@@ -374,7 +377,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     setState(() {
       _isReadOnly = !_isReadOnly;
       if (_isReadOnly) {
-        Task task = widget.task;
+        Task task = widget.args['task'];
         titleController.text = task.title;
         descriptionController.text = task.description;
         _inputDateTime = task.date;
@@ -466,7 +469,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
             onPressed: () async {
               Navigator.pop(context);
               await Provider.of<DBHelper>(context, listen: false)
-                  .deleteTask(widget.task.id)
+                  .deleteTask(widget.args['task'].id)
                   .then((value) => Navigator.pop(context));
             },
             child: const Text('DELETE'),
@@ -524,13 +527,17 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     }
 
     Task newTask = Task(
-        id: widget.task == null ? null : widget.task.id,
+        id: widget.args['task'] == null ? null : widget.args['task'].id,
         title: titleController.text,
         description: descriptionController.text,
         date: _inputDateTime,
         reminderAsText: '$_reminderValue ${describeEnum(_reminderType)}',
         reminder: _reminder);
 
+    if (_isAddMode) {
+      _listKey.currentState
+          .insertItem(0, duration: Duration(milliseconds: 500));
+    }
     _isAddMode
         ? await Provider.of<DBHelper>(context, listen: false)
             .insertTask(newTask)
