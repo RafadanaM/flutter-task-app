@@ -12,6 +12,7 @@ import 'package:tasks_app/widgets/ErrorDialog.dart';
 import 'package:tasks_app/widgets/clickable_icon.dart';
 import 'package:intl/intl.dart';
 import 'package:tasks_app/main.dart';
+import 'package:tasks_app/widgets/confirm_dialog.dart';
 
 class AddTaskScreen extends StatefulWidget {
   static const routeName = '/add';
@@ -452,30 +453,21 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
   Future<void> _showAlertDialog() async {
     return showDialog<void>(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-        title: const Text("Delete Confirmation"),
-        content: const SingleChildScrollView(
-          child: Text("Are you sure you want to delete this task?"),
-        ),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('CANCEL'),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              Provider.of<TaskProvider>(context, listen: false)
-                  .deleteTask(widget.task.id);
+        context: context,
+        builder: (BuildContext context) => ConfirmDialog(
+              title: "Confirm Delete",
+              content: "Are you sure you want to delete this task?",
+              cancelText: "CANCEL",
+              confirmText: "DELETE",
+              onPressedCancel: () => Navigator.pop(context),
+              onPressedConfirm: () {
+                Navigator.pop(context);
+                Provider.of<TaskProvider>(context, listen: false)
+                    .deleteTask(widget.task.id);
 
-              Navigator.pop(context);
-            },
-            child: const Text('DELETE'),
-          ),
-        ],
-      ),
-    );
+                Navigator.pop(context);
+              },
+            ));
   }
 
   Future<void> _showErrorDialog(String errorType, String errorMsg) async {
