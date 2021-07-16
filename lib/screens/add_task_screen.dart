@@ -7,6 +7,7 @@ import 'package:tasks_app/config/reminder.dart';
 import 'package:tasks_app/config/styles.dart';
 import 'package:tasks_app/models/task.dart';
 import 'package:tasks_app/models/task_provider.dart';
+import 'package:tasks_app/widgets/CustomSnackBar.dart';
 import 'package:tasks_app/widgets/ErrorDialog.dart';
 import 'package:tasks_app/widgets/clickable_icon.dart';
 import 'package:intl/intl.dart';
@@ -44,7 +45,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   @override
   void initState() {
     //final Task task = ModalRoute.of(context).settings.arguments;
-
     super.initState();
 
     _isAddMode = widget.task == null;
@@ -485,17 +485,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
             ErrorDialog(errorType: errorType, errorMsg: errorMsg));
   }
 
-  final snackBar = SnackBar(
-    content: Text(
-        "Reminder is set before current time. No notification will be shown"),
-    width: 280,
-    padding: const EdgeInsets.all(8),
-    behavior: SnackBarBehavior.floating,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(5.0),
-    ),
-  );
-
   // TODO make sure that Title exists and check for input time against current time
   _submit() async {
     _calculateReminder(_reminderType, _reminderValue);
@@ -511,7 +500,9 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     }
 
     if (_reminder != null && _reminder.isBefore(DateTime.now())) {
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      ScaffoldMessenger.of(context).showSnackBar(CustomSnackBar(
+          text:
+              "Reminder is set before current time. No notification will be shown"));
     }
 
     Task newTask = Task(
@@ -524,7 +515,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
     if (_isAddMode) {
       Provider.of<TaskProvider>(context, listen: false).addTask(newTask);
-      //Navigator.pop(context);
+      Navigator.pop(context);
       Navigator.popAndPushNamed(context, HomePage.routeName);
     } else {
       Provider.of<TaskProvider>(context, listen: false).ediTask(newTask);
