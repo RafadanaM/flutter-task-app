@@ -7,6 +7,7 @@ import 'package:tasks_app/config/reminder.dart';
 import 'package:tasks_app/config/styles.dart';
 import 'package:tasks_app/models/task.dart';
 import 'package:tasks_app/models/task_provider.dart';
+import 'package:tasks_app/widgets/ErrorDialog.dart';
 import 'package:tasks_app/widgets/clickable_icon.dart';
 import 'package:intl/intl.dart';
 import 'package:tasks_app/main.dart';
@@ -479,20 +480,9 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
   Future<void> _showErrorDialog(String errorType, String errorMsg) async {
     return showDialog<void>(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-        title: Text("Invalid $errorType"),
-        content: SingleChildScrollView(
-          child: Text(errorMsg),
-        ),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('OK'),
-          ),
-        ],
-      ),
-    );
+        context: context,
+        builder: (BuildContext context) =>
+            ErrorDialog(errorType: errorType, errorMsg: errorMsg));
   }
 
   final snackBar = SnackBar(
