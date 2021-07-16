@@ -1,14 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tasks_app/config/styles.dart';
+
+import 'package:tasks_app/models/task_provider.dart';
 import 'package:tasks_app/screens/add_task_screen.dart';
 import 'package:tasks_app/screens/task_detail_screen.dart';
 import 'package:tasks_app/screens/task_page.dart';
 import 'package:tasks_app/screens/fourth_page.dart';
 import 'package:tasks_app/screens/second_page.dart';
 import 'package:tasks_app/screens/completed_page.dart';
-import 'database/db_helper.dart';
+
 import 'widgets/fab_bottom_app_bar.dart';
 
 void main() {
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => DBHelper(),
+      create: (context) => TaskProvider(),
       child: MaterialApp(
         title: 'Task App',
 
@@ -53,8 +54,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
-
   PageController _pageController = PageController();
 
   int _selectedIndex = 0;
@@ -75,14 +74,7 @@ class _HomePageState extends State<HomePage> {
     //final Task task = ModalRoute.of(context).settings.arguments;
 
     super.initState();
-    _pages = [
-      TaskPage(
-        listKey: _listKey,
-      ),
-      SecondPage(),
-      CompletedPage(),
-      FourthPage()
-    ];
+    _pages = [TaskPage(), SecondPage(), CompletedPage(), FourthPage()];
   }
 
   @override
@@ -103,8 +95,7 @@ class _HomePageState extends State<HomePage> {
           : FloatingActionButton(
               backgroundColor: Color(0xFFFF844C),
               onPressed: () {
-                Navigator.pushNamed(context, AddTaskScreen.routeName,
-                    arguments: {'listKey': _listKey});
+                Navigator.pushNamed(context, AddTaskScreen.routeName);
               },
               child: Icon(
                 Icons.add,

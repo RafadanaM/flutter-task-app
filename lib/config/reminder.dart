@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:tasks_app/config/enums.dart';
-import 'package:tasks_app/config/styles.dart';
+
 //
 // class Reminder {
 //   static var reminderList = <String, List<Widget>>{

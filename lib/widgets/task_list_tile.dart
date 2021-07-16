@@ -13,7 +13,11 @@ class TaskListTile extends StatelessWidget {
   final DateFormat formatter = DateFormat('dd MMMM yyyy');
 
   TaskListTile(
-      {this.task, this.onTap, this.onChanged, this.type, this.animation});
+      {@required this.task,
+      @required this.onTap,
+      @required this.onChanged,
+      @required this.type,
+      @required this.animation});
 
   @override
   Widget build(BuildContext context) {
@@ -31,12 +35,14 @@ class TaskListTile extends StatelessWidget {
         ),
         child: Center(
           child: ListTile(
+            key: ValueKey(task.id),
             title: Padding(
               padding: type == Type.incomplete
                   ? const EdgeInsets.only(top: 5.0)
                   : const EdgeInsets.symmetric(vertical: 5.0),
               child: Text(
                 task.title,
+                key: ValueKey(task.id),
                 style: TextStyle(
                   decoration:
                       task.isCompleted ? TextDecoration.lineThrough : null,
@@ -51,6 +57,7 @@ class TaskListTile extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(vertical: 5.0),
                     child: Text(
                       formatter.format(task.date),
+                      key: ValueKey(task.id),
                       style: TextStyle(
                         color: lightGreen,
                         fontSize: 13.0,
@@ -66,6 +73,7 @@ class TaskListTile extends StatelessWidget {
             trailing: Transform.scale(
               scale: 1.4,
               child: Checkbox(
+                key: ValueKey(task.id),
                 //No size option???? Really Flutter???
                 shape: CircleBorder(),
                 side: BorderSide(color: lightGreen),

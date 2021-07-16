@@ -5,9 +5,8 @@ import 'package:tasks_app/config/styles.dart';
 
 class TaskPage extends StatelessWidget {
   static const routeName = '/task';
-  final GlobalKey<AnimatedListState> listKey;
 
-  TaskPage({@required this.listKey});
+  TaskPage();
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +29,6 @@ class TaskPage extends StatelessWidget {
             ),
             Expanded(
               child: TaskListView(
-                listKey: listKey,
                 type: Type.incomplete,
               ),
             ),

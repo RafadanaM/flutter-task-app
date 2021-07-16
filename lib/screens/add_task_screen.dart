@@ -5,18 +5,17 @@ import 'package:provider/provider.dart';
 import 'package:tasks_app/config/enums.dart';
 import 'package:tasks_app/config/reminder.dart';
 import 'package:tasks_app/config/styles.dart';
-import 'package:tasks_app/database/db_helper.dart';
 import 'package:tasks_app/models/task.dart';
+import 'package:tasks_app/models/task_provider.dart';
 import 'package:tasks_app/widgets/clickable_icon.dart';
-import 'package:flutter_material_pickers/flutter_material_pickers.dart';
 import 'package:intl/intl.dart';
 import 'package:tasks_app/main.dart';
 
 class AddTaskScreen extends StatefulWidget {
   static const routeName = '/add';
 
-  final Map<String, dynamic> args;
-  const AddTaskScreen(this.args);
+  final Task task;
+  const AddTaskScreen(this.task);
 
   @override
   _AddTaskScreenState createState() => _AddTaskScreenState();
@@ -34,7 +33,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   bool _isAllowed = false;
   bool _isAddMode;
   bool _isReadOnly = true;
-  GlobalKey<AnimatedListState> _listKey;
 
   final DateFormat formatter = DateFormat('MMM dd, HH:mm');
   FixedExtentScrollController _controllerReminderValue;
@@ -47,29 +45,28 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     //final Task task = ModalRoute.of(context).settings.arguments;
 
     super.initState();
-    _listKey = widget.args['listKey'];
-    _isAddMode = widget.args['task'] == null;
-    _pickedDateTime = _isAddMode ? null : widget.args['task'].date;
-    titleController.text = _isAddMode ? "" : widget.args['task'].title;
-    descriptionController.text =
-        _isAddMode ? "" : widget.args['task'].description;
-    _reminder = _isAddMode ? null : widget.args['task'].reminder;
-    _reminderValue = _isAddMode || widget.args['task'].reminderAsText == null
-        ? 0
-        : int.parse(widget.args['task'].reminderAsText.split(" ")[0]);
 
-    _reminderType = _isAddMode || widget.args['task'].reminderAsText == null
+    _isAddMode = widget.task == null;
+    _pickedDateTime = _isAddMode ? null : widget.task.date;
+    titleController.text = _isAddMode ? "" : widget.task.title;
+    descriptionController.text = _isAddMode ? "" : widget.task.description;
+    _reminder = _isAddMode ? null : widget.task.reminder;
+    _reminderValue = _isAddMode || widget.task.reminderAsText == null
+        ? 0
+        : int.parse(widget.task.reminderAsText.split(" ")[0]);
+
+    _reminderType = _isAddMode || widget.task.reminderAsText == null
         ? ReminderType.minute
         : ReminderType.values.firstWhere(
             (element) =>
                 describeEnum(element) ==
-                widget.args['task'].reminderAsText.split(" ")[1],
+                widget.task.reminderAsText.split(" ")[1],
             orElse: () => ReminderType.minute);
     _controllerReminderType = FixedExtentScrollController(
         initialItem: ReminderType.values.indexOf(_reminderType));
     _controllerReminderValue =
         FixedExtentScrollController(initialItem: _reminderValue);
-    _inputDateTime = _isAddMode ? DateTime.now() : widget.args['task'].date;
+    _inputDateTime = _isAddMode ? DateTime.now() : widget.task.date;
   }
 
   @override
@@ -89,7 +86,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
-                    if (!widget.args['task'].isCompleted)
+                    if (!widget.task.isCompleted)
                       ClickableIcon(
                         direction: Axis.vertical,
                         iconData: _isReadOnly ? Icons.edit : Icons.clear,
@@ -377,7 +374,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     setState(() {
       _isReadOnly = !_isReadOnly;
       if (_isReadOnly) {
-        Task task = widget.args['task'];
+        Task task = widget.task;
         titleController.text = task.title;
         descriptionController.text = task.description;
         _inputDateTime = task.date;
@@ -466,11 +463,12 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
             child: const Text('CANCEL'),
           ),
           TextButton(
-            onPressed: () async {
+            onPressed: () {
               Navigator.pop(context);
-              await Provider.of<DBHelper>(context, listen: false)
-                  .deleteTask(widget.args['task'].id)
-                  .then((value) => Navigator.pop(context));
+              Provider.of<TaskProvider>(context, listen: false)
+                  .deleteTask(widget.task.id);
+
+              Navigator.pop(context);
             },
             child: const Text('DELETE'),
           ),
@@ -527,7 +525,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     }
 
     Task newTask = Task(
-        id: widget.args['task'] == null ? null : widget.args['task'].id,
+        id: widget.task == null ? null : widget.task.id,
         title: titleController.text,
         description: descriptionController.text,
         date: _inputDateTime,
@@ -535,21 +533,13 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
         reminder: _reminder);
 
     if (_isAddMode) {
-      _listKey.currentState
-          .insertItem(0, duration: Duration(milliseconds: 500));
+      Provider.of<TaskProvider>(context, listen: false).addTask(newTask);
+      //Navigator.pop(context);
+      Navigator.popAndPushNamed(context, HomePage.routeName);
+    } else {
+      Provider.of<TaskProvider>(context, listen: false).ediTask(newTask);
+      Navigator.pop(context);
     }
-    _isAddMode
-        ? await Provider.of<DBHelper>(context, listen: false)
-            .insertTask(newTask)
-            .then((value) {
-            Navigator.pop(context);
-            Navigator.popAndPushNamed(context, HomePage.routeName);
-          })
-        : await Provider.of<DBHelper>(context, listen: false)
-            .updateTask(newTask)
-            .then((value) {
-            Navigator.pop(context);
-          });
 
     // Navigator.pop(context);
   }

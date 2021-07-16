@@ -1,12 +1,11 @@
 import 'dart:async';
-import 'package:flutter/cupertino.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'package:tasks_app/models/grocery.dart';
 import 'package:tasks_app/models/task.dart';
 
-class DBHelper extends ChangeNotifier {
+class DBHelper {
   static final _databaseName = 'TaskDatabase.db';
   static final _databaseVersion = 1;
 
@@ -53,7 +52,6 @@ class DBHelper extends ChangeNotifier {
     final Database db = await database;
     await db.insert('tasks', task.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
-    notifyListeners();
   }
 
   //delete from database
@@ -65,7 +63,6 @@ class DBHelper extends ChangeNotifier {
       where: "id = ?",
       whereArgs: [id],
     );
-    notifyListeners();
   }
 
   //get from database
@@ -141,22 +138,14 @@ class DBHelper extends ChangeNotifier {
   //change complete task
   Future<void> completeTask(Task task) async {
     final Database db = await database;
-
-    task.toggleCompleted();
     await db
         .update('tasks', task.toMap(), where: 'id = ?', whereArgs: [task.id]);
-    notifyListeners();
-  }
-
-  void notify() async {
-    notifyListeners();
   }
 
   Future<void> updateTask(Task task) async {
     final Database db = await database;
     await db
         .update('tasks', task.toMap(), where: 'id = ?', whereArgs: [task.id]);
-    notifyListeners();
   }
 
   //get row count
@@ -171,7 +160,6 @@ class DBHelper extends ChangeNotifier {
     final Database db = await database;
     await db.insert('groceries', grocery.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
-    notifyListeners();
   }
 
   Future<void> completeGrocery(Grocery grocery) async {
@@ -179,7 +167,6 @@ class DBHelper extends ChangeNotifier {
     grocery.toggleCompleted();
     await db.update('groceries', grocery.toMap(),
         where: 'id = ?', whereArgs: [grocery.id]);
-    notifyListeners();
   }
 
   //delete from database
@@ -191,7 +178,6 @@ class DBHelper extends ChangeNotifier {
       where: 'id = ?',
       whereArgs: [id],
     );
-    notifyListeners();
   }
 
   //get from database
