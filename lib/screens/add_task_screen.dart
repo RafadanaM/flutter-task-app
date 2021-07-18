@@ -13,6 +13,7 @@ import 'package:tasks_app/widgets/clickable_icon.dart';
 import 'package:intl/intl.dart';
 import 'package:tasks_app/main.dart';
 import 'package:tasks_app/widgets/confirm_dialog.dart';
+import 'package:tasks_app/widgets/reminder_picker.dart';
 
 class AddTaskScreen extends StatefulWidget {
   static const routeName = '/add';
@@ -249,89 +250,53 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                                 onTap: () {},
                               ),
                               children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                      color: lightGreen,
-                                      borderRadius: BorderRadius.vertical(
-                                          bottom: Radius.circular(10))),
-                                  height: 125,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Expanded(
-                                        child: ListWheelScrollView(
-                                          controller: _controllerReminderValue,
-                                          overAndUnderCenterOpacity: 0.6,
-                                          diameterRatio: 0.8,
-                                          useMagnifier: true,
-                                          magnification: 1.5,
-                                          itemExtent: itemExtent,
-                                          physics: FixedExtentScrollPhysics(),
-                                          children: reminderList[_reminderType]
-                                              .map((e) => Text(
-                                                    e.toString(),
-                                                    style: TextStyle(
-                                                        color: darkGreen,
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  ))
-                                              .toList(),
-                                          onSelectedItemChanged: (value) {
-                                            setState(() {
-                                              _reminderValue =
-                                                  reminderList[_reminderType]
-                                                      [value];
-                                            });
-                                          },
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: ListWheelScrollView(
-                                          controller: _controllerReminderType,
-                                          overAndUnderCenterOpacity: 0.6,
-                                          diameterRatio: 0.8,
-                                          useMagnifier: true,
-                                          magnification: 1.5,
-                                          itemExtent: itemExtent,
-                                          physics: FixedExtentScrollPhysics(),
-                                          children: reminderList.keys
-                                              .map((e) => Text(
-                                                    describeEnum(e),
-                                                    style: TextStyle(
-                                                        color: darkGreen,
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  ))
-                                              .toList(),
-                                          onSelectedItemChanged: (value) {
-                                            int lastItem = reminderList[
-                                                    ReminderType.values[value]]
-                                                .last;
-                                            setState(() {
-                                              _reminderType =
-                                                  ReminderType.values[value];
-                                            });
-                                            if (_reminderValue != null &&
-                                                (_reminderValue > lastItem)) {
-                                              setState(() {
-                                                _reminderValue = lastItem;
-                                              });
-                                              _controllerReminderValue
-                                                  .jumpToItem(lastItem);
-                                            }
-                                            _controllerReminderValue.jumpTo(
-                                                (itemExtent + 0.001) *
-                                                    _reminderValue);
-                                          },
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                                ReminderPicker(
+                                  numberController: _controllerReminderValue,
+                                  numberChildren: reminderList[_reminderType]
+                                      .map((e) => Text(
+                                            e.toString(),
+                                            style: TextStyle(
+                                                color: darkGreen,
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold),
+                                          ))
+                                      .toList(),
+                                  numberOnSelectedItemChanged: (value) {
+                                    setState(() {
+                                      _reminderValue =
+                                          reminderList[_reminderType][value];
+                                    });
+                                  },
+                                  typeController: _controllerReminderType,
+                                  typeChildren: reminderList.keys
+                                      .map((e) => Text(
+                                            describeEnum(e),
+                                            style: TextStyle(
+                                                color: darkGreen,
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold),
+                                          ))
+                                      .toList(),
+                                  typeOnSelectedItemChanged: (value) {
+                                    int lastItem =
+                                        reminderList[ReminderType.values[value]]
+                                            .last;
+                                    setState(() {
+                                      _reminderType =
+                                          ReminderType.values[value];
+                                    });
+                                    if (_reminderValue != null &&
+                                        (_reminderValue > lastItem)) {
+                                      setState(() {
+                                        _reminderValue = lastItem;
+                                      });
+                                      _controllerReminderValue
+                                          .jumpToItem(lastItem);
+                                    }
+                                    _controllerReminderValue.jumpTo(
+                                        (itemExtent + 0.001) * _reminderValue);
+                                  },
+                                )
                               ],
                             ),
                     ],
