@@ -1,4 +1,0 @@
-enum Type {
-  incomplete,
-  complete,
-}

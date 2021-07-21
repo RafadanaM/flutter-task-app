@@ -1,13 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tasks_app/models/grocery_provider.dart';
+
+import 'package:tasks_app/models/task_provider.dart';
 import 'package:tasks_app/screens/add_task_screen.dart';
 import 'package:tasks_app/screens/task_detail_screen.dart';
 import 'package:tasks_app/screens/task_page.dart';
 import 'package:tasks_app/screens/fourth_page.dart';
 import 'package:tasks_app/screens/second_page.dart';
 import 'package:tasks_app/screens/completed_page.dart';
-import 'database/db_helper.dart';
+
 import 'widgets/fab_bottom_app_bar.dart';
 
 void main() {
@@ -19,10 +22,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => DBHelper(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<TaskProvider>(create: (_) => TaskProvider()),
+        ChangeNotifierProvider<GroceryProvider>(
+            create: (_) => GroceryProvider()),
+      ],
       child: MaterialApp(
-        title: 'Flutter Demo',
+        title: 'Task App',
         initialRoute: HomePage.routeName,
         onGenerateRoute: (RouteSettings settings) {
           var routes = <String, WidgetBuilder>{
@@ -51,24 +58,41 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _selectedIndex = 0;
-  List<Widget> _pages = [TaskPage(), SecondPage(), ThirdPage(), FourthPage()];
+  PageController _pageController = PageController();
 
-  void _selectedPage(int index) {
+  int _selectedIndex = 0;
+  List<Widget> _pages;
+
+  void _onPageChanged(int index) {
     setState(() {
       _selectedIndex = index;
     });
   }
 
+  void _selectedPage(int index) {
+    _pageController.jumpToPage(index);
+  }
+
+  @override
+  void initState() {
+    //final Task task = ModalRoute.of(context).settings.arguments;
+
+    super.initState();
+    _pages = [TaskPage(), SecondPage(), CompletedPage(), FourthPage()];
+  }
+
   @override
   Widget build(BuildContext context) {
     //final Size size = MediaQuery.of(context).size;
+
     return Scaffold(
       extendBody: false,
       backgroundColor: Color(0xFFEFF6F4),
-      body: IndexedStack(
-        index: _selectedIndex,
+      body: PageView(
+        controller: _pageController,
         children: _pages,
+        onPageChanged: _onPageChanged,
+        physics: NeverScrollableScrollPhysics(),
       ),
       floatingActionButton: _selectedIndex == 1
           ? null

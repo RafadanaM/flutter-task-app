@@ -1,12 +1,20 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tasks_app/database/db_helper.dart';
+import 'package:tasks_app/config/enums.dart';
+import 'package:tasks_app/config/reminder.dart';
+import 'package:tasks_app/config/styles.dart';
 import 'package:tasks_app/models/task.dart';
+import 'package:tasks_app/models/task_provider.dart';
+import 'package:tasks_app/widgets/CustomSnackBar.dart';
+import 'package:tasks_app/widgets/ErrorDialog.dart';
 import 'package:tasks_app/widgets/clickable_icon.dart';
-import 'package:flutter_material_pickers/flutter_material_pickers.dart';
 import 'package:intl/intl.dart';
 import 'package:tasks_app/main.dart';
+
+import 'package:tasks_app/widgets/confirm_dialog.dart';
+import 'package:tasks_app/widgets/reminder_picker.dart';
 
 class AddTaskScreen extends StatefulWidget {
   static const routeName = '/add';
@@ -19,49 +27,50 @@ class AddTaskScreen extends StatefulWidget {
 }
 
 class _AddTaskScreenState extends State<AddTaskScreen> {
-  DateTime _pickedDate;
+  static const itemExtent = 30.0;
   DateTime _inputDateTime;
-  TimeOfDay _pickedTime;
+  DateTime _pickedDateTime;
   DateTime _reminder;
+  int _reminderValue = 0;
   double _height;
   double _width;
+  ReminderType _reminderType = ReminderType.minute;
   bool _isAllowed = false;
-  bool _isReadOnly;
-  List<String> _minutes;
+  bool _isAddMode;
+  bool _isReadOnly = true;
+
   final DateFormat formatter = DateFormat('MMM dd, HH:mm');
+  FixedExtentScrollController _controllerReminderValue;
+  FixedExtentScrollController _controllerReminderType;
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
 
   @override
   void initState() {
     //final Task task = ModalRoute.of(context).settings.arguments;
-    // print(widget.task.title);
     super.initState();
-    _minutes = <String>[
-      '5 Minutes',
-      '10 Minutes',
-      '15 Minutes',
-      '20 Minutes',
-      '25 Minutes',
-      '30 Minutes',
-    ];
-    _isReadOnly = widget.task != null;
-    _pickedDate = widget.task == null
-        ? DateTime.now()
-        : DateTime(widget.task.date.year, widget.task.date.month,
-            widget.task.date.day);
-    _pickedTime = widget.task == null
-        ? TimeOfDay.now()
-        : TimeOfDay(
-            hour: widget.task.date.hour, minute: widget.task.date.minute);
-    titleController.text = widget.task == null ? "" : widget.task.title;
-    descriptionController.text =
-        widget.task == null ? "" : widget.task.description;
-    _reminder = widget.task == null ? null : widget.task.reminder;
-    _inputDateTime = widget.task == null
-        ? DateTime(_pickedDate.year, _pickedDate.month, _pickedDate.day,
-            _pickedTime.hour, _pickedTime.minute)
-        : widget.task.date;
+
+    _isAddMode = widget.task == null;
+    _pickedDateTime = _isAddMode ? null : widget.task.date;
+    titleController.text = _isAddMode ? "" : widget.task.title;
+    descriptionController.text = _isAddMode ? "" : widget.task.description;
+    _reminder = _isAddMode ? null : widget.task.reminder;
+    _reminderValue = _isAddMode || widget.task.reminderAsText == null
+        ? 0
+        : int.parse(widget.task.reminderAsText.split(" ")[0]);
+
+    _reminderType = _isAddMode || widget.task.reminderAsText == null
+        ? ReminderType.minute
+        : ReminderType.values.firstWhere(
+            (element) =>
+                describeEnum(element) ==
+                widget.task.reminderAsText.split(" ")[1],
+            orElse: () => ReminderType.minute);
+    _controllerReminderType = FixedExtentScrollController(
+        initialItem: ReminderType.values.indexOf(_reminderType));
+    _controllerReminderValue =
+        FixedExtentScrollController(initialItem: _reminderValue);
+    _inputDateTime = _isAddMode ? DateTime.now() : widget.task.date;
   }
 
   @override
@@ -71,7 +80,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
     return Scaffold(
       backgroundColor: Color(0xFF064B41),
-      bottomNavigationBar: widget.task == null
+      bottomNavigationBar: _isAddMode
           ? BottomAppBar()
           : BottomAppBar(
               elevation: 0,
@@ -99,12 +108,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                       title: _isReadOnly ? 'Delete' : 'Save',
                       itemSpacing: 5.0,
                       onTap: () async {
-                        _isReadOnly
-                            ? await Provider.of<DBHelper>(context,
-                                    listen: false)
-                                .deleteTask(widget.task.id)
-                                .then((value) => Navigator.pop(context))
-                            : _submit();
+                        _isReadOnly ? await _showAlertDialog() : _submit();
                       },
                     ),
                   ],
@@ -145,7 +149,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                         ),
                         TextFormField(
                           validator: _checkTitle(titleController.text),
-                          readOnly: _isReadOnly,
+                          readOnly: _isReadOnly && !_isAddMode,
                           controller: titleController,
                           maxLines: 1,
                           style: TextStyle(
@@ -172,7 +176,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       TextField(
-                        readOnly: _isReadOnly,
+                        readOnly: _isReadOnly && !_isAddMode,
                         controller: descriptionController,
                         minLines: 2,
                         maxLines: 6,
@@ -183,7 +187,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                         cursorColor: Colors.grey,
                         decoration: InputDecoration(
                           border: InputBorder.none,
-                          hintText: widget.task == null || !_isReadOnly
+                          hintText: _isAddMode || !_isReadOnly
                               ? 'Description'
                               : "No description",
                           hintStyle: TextStyle(
@@ -204,7 +208,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                         titleSize: 18.0,
                         itemSpacing: 20.0,
                         onTap: () {
-                          if (!_isReadOnly) {
+                          if (!_isReadOnly || _isAddMode) {
                             FocusScope.of(context).unfocus();
                             _pickDateTime();
                           }
@@ -213,29 +217,96 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                       // SizedBox(
                       //   height: _height * 0.05,
                       // ),
-                      ClickableIcon(
-                        direction: Axis.horizontal,
-                        iconData: Icons.notifications,
-                        iconSize: 40,
-                        title: _reminder == null
-                            ? 'Reminder'
-                            : formatter.format(_reminder),
-                        titleSize: 18.0,
-                        itemSpacing: 20.0,
-                        onTap: () {
-                          if (!_isReadOnly) {
-                            FocusScope.of(context).unfocus();
-                            _dropDown();
-                          }
-                        },
-                      ),
+                      _isReadOnly && !_isAddMode
+                          ? ClickableIcon(
+                              direction: Axis.horizontal,
+                              iconData: Icons.notifications,
+                              iconSize: 40,
+                              title: _reminder == null
+                                  ? 'Reminder'
+                                  : formatter.format(_reminder),
+                              titleSize: 18.0,
+                              itemSpacing: 20.0,
+                              onTap: () {},
+                            )
+                          : ExpansionTile(
+                              iconColor: lightGreen,
+                              collapsedIconColor: lightGreen,
+                              tilePadding: EdgeInsets.only(left: 0),
+                              expandedAlignment: Alignment.center,
+                              onExpansionChanged: (value) {
+                                if (!value)
+                                  _calculateReminder(
+                                      _reminderType, _reminderValue);
+                              },
+                              title: ClickableIcon(
+                                direction: Axis.horizontal,
+                                iconData: Icons.notifications,
+                                iconSize: 40,
+                                title: _reminder == null
+                                    ? 'Reminder'
+                                    : formatter.format(_reminder),
+                                titleSize: 18.0,
+                                itemSpacing: 20.0,
+                                onTap: () {},
+                              ),
+                              children: [
+                                ReminderPicker(
+                                  numberController: _controllerReminderValue,
+                                  numberChildren: reminderList[_reminderType]
+                                      .map((e) => Text(
+                                            e.toString(),
+                                            style: TextStyle(
+                                                color: darkGreen,
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold),
+                                          ))
+                                      .toList(),
+                                  numberOnSelectedItemChanged: (value) {
+                                    setState(() {
+                                      _reminderValue =
+                                          reminderList[_reminderType][value];
+                                    });
+                                  },
+                                  typeController: _controllerReminderType,
+                                  typeChildren: reminderList.keys
+                                      .map((e) => Text(
+                                            describeEnum(e),
+                                            style: TextStyle(
+                                                color: darkGreen,
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold),
+                                          ))
+                                      .toList(),
+                                  typeOnSelectedItemChanged: (value) {
+                                    int lastItem =
+                                        reminderList[ReminderType.values[value]]
+                                            .last;
+                                    setState(() {
+                                      _reminderType =
+                                          ReminderType.values[value];
+                                    });
+                                    if (_reminderValue != null &&
+                                        (_reminderValue > lastItem)) {
+                                      setState(() {
+                                        _reminderValue = lastItem;
+                                      });
+                                      _controllerReminderValue
+                                          .jumpToItem(lastItem);
+                                    }
+                                    _controllerReminderValue.jumpTo(
+                                        (itemExtent + 0.001) * _reminderValue);
+                                  },
+                                )
+                              ],
+                            ),
                     ],
                   ),
                 ),
               ],
             ),
           ),
-          widget.task == null
+          _isAddMode
               ? Container(
                   margin: EdgeInsets.all(20),
                   child: Align(
@@ -281,7 +352,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   }
 
   _checkTitle(String title) {
-    print(title);
     if (title.isNotEmpty) {
       setState(() {
         _isAllowed = true;
@@ -296,88 +366,127 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   _pickDateTime() async {
     DateTime date = await showDatePicker(
       context: context,
-      initialDate: _pickedDate,
+      initialDate: _isAddMode ? DateTime.now() : _pickedDateTime,
       firstDate: DateTime.now(),
       lastDate: DateTime(DateTime.now().year + 5),
     );
     if (date != null) {
-      setState(() {
-        _pickedDate = date;
-        print(date);
-      });
       TimeOfDay time = await showTimePicker(
         context: context,
-        initialTime: _pickedTime,
+        initialTime: _isAddMode
+            ? TimeOfDay.now()
+            : TimeOfDay(
+                hour: _pickedDateTime.hour, minute: _pickedDateTime.minute),
       );
-      DateTime currentDateTime = DateTime.now();
       if (time != null) {
-        _inputDateTime = DateTime(_pickedDate.year, _pickedDate.month,
-            _pickedDate.day, time.hour, time.minute);
-        if (_inputDateTime.isAfter(currentDateTime))
-          setState(() {
-            _pickedTime = time;
-            _reminder = null;
-          });
+        DateTime selectedDateTime =
+            DateTime(date.year, date.month, date.day, time.hour, time.minute);
+        setState(() {
+          _inputDateTime = selectedDateTime;
+        });
+        _calculateReminder(_reminderType, _reminderValue);
       }
     }
   }
 
-  _dropDown() {
-    return showMaterialScrollPicker(
-        context: context,
-        title: "Reminder",
-        items: _minutes,
-        maxLongSide: 400,
-        maxShortSide: 300,
-        // selectedItem: selectedUsState,
-        onChanged: (value) {
-          List<String> split = value.split(" ");
-          int time = int.parse(split[0]);
-          if (DateTime.now()
-              .isBefore(_inputDateTime.subtract(Duration(minutes: time)))) {
-            setState(() {
-              _reminder = _inputDateTime.subtract(Duration(minutes: time));
-            });
-          } else {
-            setState(() {
-              _reminder = null;
-            });
-          }
+  _calculateReminder(ReminderType reminderType, int reminderValue) {
+    if (reminderType != null || reminderValue != null) {
+      if (reminderValue == 0) {
+        setState(() {
+          _reminder = null;
         });
+        return;
+      }
+      var reminder;
+      switch (reminderType) {
+        case ReminderType.minute:
+          reminder = _inputDateTime.subtract(Duration(minutes: reminderValue));
+          break;
+        case ReminderType.hour:
+          reminder = _inputDateTime.subtract(Duration(hours: reminderValue));
+          break;
+        case ReminderType.day:
+          reminder = _inputDateTime.subtract(Duration(days: reminderValue));
+          break;
+        default:
+          return;
+      }
+      setState(() {
+        _reminder = reminder;
+      });
+    }
   }
 
-  // _calcReminder() {
-  //   DateTime reminder = _inputDateTime.subtract(Duration(minutes: _reminder));
-  //   return formatter.format(reminder);
-  // }
+  Future<void> _showAlertDialog() async {
+    return showDialog<void>(
+        context: context,
+        builder: (BuildContext context) => ConfirmDialog(
+              title: "Confirm Delete",
+              content: "Are you sure you want to delete this task?",
+              cancelText: "CANCEL",
+              confirmText: "DELETE",
+              onPressedCancel: () => Navigator.pop(context),
+              onPressedConfirm: () {
+                Navigator.pop(context);
+                Provider.of<TaskProvider>(context, listen: false)
+                    .deleteTask(widget.task.id);
+
+                Navigator.pop(context);
+              },
+            ));
+  }
+
+  Future<void> _showErrorDialog(String errorType, String errorMsg) async {
+    return showDialog<void>(
+        context: context,
+        builder: (BuildContext context) =>
+            ErrorDialog(errorType: errorType, errorMsg: errorMsg));
+  }
 
   // TODO make sure that Title exists and check for input time against current time
   _submit() async {
+    _calculateReminder(_reminderType, _reminderValue);
+
+    if (titleController.text.isEmpty) {
+      _showErrorDialog("Title", "Title cannot be empty");
+      return;
+    }
+
+    if (_inputDateTime.isBefore(DateTime.now())) {
+      _showErrorDialog("Due Date", "Due date cannot be before current time");
+      return;
+    }
+
+    if (_reminder != null && _reminder.isBefore(DateTime.now())) {
+      ScaffoldMessenger.of(context).showSnackBar(CustomSnackBar(
+          text:
+              "Reminder is set before current time. No notification will be shown"));
+    }
+
     Task newTask = Task(
         id: widget.task == null ? null : widget.task.id,
         title: titleController.text,
         description: descriptionController.text,
         date: _inputDateTime,
+        reminderAsText: '$_reminderValue ${describeEnum(_reminderType)}',
         reminder: _reminder);
 
-    widget.task == null
-        ? await Provider.of<DBHelper>(context, listen: false)
-            .insertTask(newTask)
-            .then((value) {
-            Navigator.pop(context);
-            Navigator.popAndPushNamed(context, HomePage.routeName);
-          })
-        : await Provider.of<DBHelper>(context, listen: false)
-            .updateTask(newTask)
-            .then((value) {
-            Navigator.pop(context);
-          });
+    if (_isAddMode) {
+      Provider.of<TaskProvider>(context, listen: false).addTask(newTask);
+      Navigator.pop(context);
+      Navigator.popAndPushNamed(context, HomePage.routeName);
+    } else {
+      Provider.of<TaskProvider>(context, listen: false).ediTask(newTask);
+      Navigator.pop(context);
+    }
 
     // Navigator.pop(context);
   }
 
   @override
   void dispose() {
+    _controllerReminderType.dispose();
+    _controllerReminderValue.dispose();
     titleController.dispose();
     descriptionController.dispose();
     super.dispose();
