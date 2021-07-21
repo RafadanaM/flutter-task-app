@@ -77,7 +77,6 @@ class TaskListView extends StatelessWidget {
   _completeTask(int index, Task task, BuildContext context) async {
     task.toggleCompleted();
     Provider.of<TaskProvider>(context, listen: false).completeTask(task);
-
     _listKey.currentState.removeItem(index,
         (context, animation) => _removeItemBuilder(task, context, animation),
         duration: Duration(milliseconds: 500));
