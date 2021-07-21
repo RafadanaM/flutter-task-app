@@ -29,7 +29,7 @@ class TaskProvider extends ChangeNotifier {
     return _completedTasks;
   }
 
-  void addTask(Task task) async {
+  void addTask(Task task) {
     _incompleteTasks.add(task);
     _incompleteTasks.sort((a, b) => a.date.compareTo(b.date));
     notifyListeners();

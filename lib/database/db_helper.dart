@@ -166,7 +166,6 @@ class DBHelper {
 
   Future<void> completeGrocery(Grocery grocery) async {
     final Database db = await database;
-    grocery.toggleCompleted();
     await db.update('groceries', grocery.toMap(),
         where: 'id = ?', whereArgs: [grocery.id]);
   }

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:tasks_app/config/styles.dart';
 import 'package:tasks_app/database/db_helper.dart';
 import 'package:tasks_app/models/grocery.dart';
+import 'package:tasks_app/models/grocery_provider.dart';
 import 'package:tasks_app/widgets/clickable_icon.dart';
 import 'package:tasks_app/widgets/grocery_list_view.dart';
 import 'package:tasks_app/widgets/header.dart';
@@ -91,10 +92,10 @@ class _SecondPageState extends State<SecondPage> {
                                 border: InputBorder.none,
                                 hintText: 'Insert grocery item..',
                                 hintStyle: TextStyle(
-                                    color: lightOrange,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20.0,
-                                  ),
+                                  color: lightOrange,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20.0,
+                                ),
                               ),
                             ),
                           ),
@@ -155,8 +156,8 @@ class _SecondPageState extends State<SecondPage> {
         title: groceryController.text,
       );
 
-      await Provider.of<DBHelper>(context, listen: false)
-          .insertGrocery(newGrocery);
+      Provider.of<GroceryProvider>(context, listen: false)
+          .addGrocery(newGrocery);
 
       groceryController.clear();
     }
@@ -164,146 +165,150 @@ class _SecondPageState extends State<SecondPage> {
 
   _showMenu() {
     showModalBottomSheet<void>(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      context: context,
-      builder: (BuildContext context) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              padding: EdgeInsets.only(
-                top: 10,
-                left: 10,
-                right: 10,
-                bottom: 20,
-              ),
-              decoration: BoxDecoration(
-                color: darkerGreen,
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
-              ),
-              alignment: Alignment.topLeft,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Align(
-                    child: Container(
-                      height: 4,
-                      width: 25,
-                      margin: EdgeInsets.only(bottom: 15),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        context: context,
+        builder: (BuildContext context) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: EdgeInsets.only(
+                  top: 10,
+                  left: 10,
+                  right: 10,
+                  bottom: 20,
+                ),
+                decoration: BoxDecoration(
+                  color: darkerGreen,
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20)),
+                ),
+                alignment: Alignment.topLeft,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Align(
+                      child: Container(
+                        height: 4,
+                        width: 25,
+                        margin: EdgeInsets.only(bottom: 15),
+                        decoration: BoxDecoration(
+                            color: lightGreen,
+                            borderRadius: BorderRadius.circular(5)),
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(
+                        bottom: 10,
+                      ),
                       decoration: BoxDecoration(
-                        color: lightGreen,
-                        borderRadius: BorderRadius.circular(5)
+                        color: darkestGreen,
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(bottom: 10,),
-                    decoration: BoxDecoration(
-                      color: darkestGreen,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: TextButton(
-                      style: TextButton.styleFrom(
-                        minimumSize: Size(double.infinity, 30),
-                        alignment: Alignment.centerLeft,
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 12,
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                          minimumSize: Size(double.infinity, 30),
+                          alignment: Alignment.centerLeft,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 12,
+                          ),
                         ),
-                      ),
-                      child: Text(
-                        'Clear all items',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20.0,
+                        child: Text(
+                          'Clear all items',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20.0,
+                          ),
+                          textAlign: TextAlign.left,
                         ),
-                        textAlign: TextAlign.left,
+                        onPressed: () {
+                          _deleteAll();
+                          Navigator.pop(context);
+                        },
                       ),
-                      onPressed: () {
-                        _deleteAll();
-                        Navigator.pop(context);
-                      },
                     ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(bottom: 10,),
-                    decoration: BoxDecoration(
-                      color: darkestGreen,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: TextButton(
-                      style: TextButton.styleFrom(
-                        minimumSize: Size(double.infinity, 30),
-                        alignment: Alignment.centerLeft,
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 12,
+                    Container(
+                      margin: EdgeInsets.only(
+                        bottom: 10,
+                      ),
+                      decoration: BoxDecoration(
+                        color: darkestGreen,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                          minimumSize: Size(double.infinity, 30),
+                          alignment: Alignment.centerLeft,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 12,
+                          ),
                         ),
-                      ),
-                      child: Text(
-                        'Clear checklisted items',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20.0,
+                        child: Text(
+                          'Clear checklisted items',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20.0,
+                          ),
+                          textAlign: TextAlign.left,
                         ),
-                        textAlign: TextAlign.left,
+                        onPressed: () {
+                          _deleteCompleted();
+                          Navigator.pop(context);
+                        },
                       ),
-                      onPressed: () {
-                        _deleteCompleted();
-                        Navigator.pop(context);
-                      },
                     ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(bottom: 10,),
-                    decoration: BoxDecoration(
-                      color: darkestGreen,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: TextButton(
-                      style: TextButton.styleFrom(
-                        minimumSize: Size(double.infinity, 30),
-                        alignment: Alignment.centerLeft,
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 12,
+                    Container(
+                      margin: EdgeInsets.only(
+                        bottom: 10,
+                      ),
+                      decoration: BoxDecoration(
+                        color: darkestGreen,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                          minimumSize: Size(double.infinity, 30),
+                          alignment: Alignment.centerLeft,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 12,
+                          ),
                         ),
-                      ),
-                      child: Text(
-                        'Uncheck all items',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20.0,
+                        child: Text(
+                          'Uncheck all items',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20.0,
+                          ),
+                          textAlign: TextAlign.left,
                         ),
-                        textAlign: TextAlign.left,
+                        onPressed: () {
+                          _uncheckAll();
+                          Navigator.pop(context);
+                        },
                       ),
-                      onPressed: () {
-                        _uncheckAll();
-                        Navigator.pop(context);
-                      },
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
-        );
-      }
-    );
+            ],
+          );
+        });
   }
 
-  _deleteAll() async {
-    await Provider.of<DBHelper>(context, listen: false)
-          .deleteAllGrocery();
-  }
-  
-  _deleteCompleted() async {
-    await Provider.of<DBHelper>(context, listen: false)
-          .deleteCompletedGrocery(true);
+  _deleteAll() {
+    Provider.of<GroceryProvider>(context, listen: false).deleteAllGroceries();
   }
 
-  _uncheckAll() async {
-    await Provider.of<DBHelper>(context, listen: false)
-          .uncheckAllGroceries();
+  _deleteCompleted() {
+    Provider.of<GroceryProvider>(context, listen: false)
+        .deleteAllCompletedGroceries();
+  }
+
+  _uncheckAll() {
+    Provider.of<GroceryProvider>(context, listen: false).uncheckAllGroceries();
   }
 }

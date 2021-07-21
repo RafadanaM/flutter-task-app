@@ -88,7 +88,8 @@ class _GroceryListViewState extends State<GroceryListView> {
                                               color: backgroundPrimary,
                                             ),
                                             onTap: (value) =>
-                                                Provider.of<DBHelper>(context,
+                                                Provider.of<GroceryProvider>(
+                                                        context,
                                                         listen: false)
                                                     .completeGrocery(
                                                         snapshot.data[index]),
