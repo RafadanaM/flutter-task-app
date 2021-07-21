@@ -36,7 +36,7 @@ class TaskProvider extends ChangeNotifier {
     DBHelper().insertTask(task);
   }
 
-  void ediTask(Task task) {
+  void completeTask(Task task) {
     print(task.isCompleted);
     _incompleteTasks.removeWhere((element) => element.id == task.id);
     _completedTasks.add(task);
@@ -50,5 +50,12 @@ class TaskProvider extends ChangeNotifier {
     _completedTasks.removeWhere((element) => element.id == id);
     notifyListeners();
     DBHelper().deleteTask(id);
+  }
+
+  void editTask(Task task) {
+    _incompleteTasks[
+        _incompleteTasks.indexWhere((task) => task.id == task.id)] = task;
+    notifyListeners();
+    DBHelper().updateTask(task);
   }
 }
