@@ -484,6 +484,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
   @override
   void dispose() {
+    _controllerReminderType.dispose();
+    _controllerReminderValue.dispose();
     titleController.dispose();
     descriptionController.dispose();
     super.dispose();
