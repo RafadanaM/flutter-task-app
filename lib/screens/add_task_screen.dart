@@ -476,7 +476,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
       Navigator.pop(context);
       Navigator.popAndPushNamed(context, HomePage.routeName);
     } else {
-      Provider.of<TaskProvider>(context, listen: false).ediTask(newTask);
+      Provider.of<TaskProvider>(context, listen: false).editTask(newTask);
       Navigator.pop(context);
     }
 

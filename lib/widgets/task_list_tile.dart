@@ -21,9 +21,12 @@ class TaskListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizeTransition(
+    return SlideTransition(
       key: ValueKey(task.id),
-      sizeFactor: animation,
+      position: Tween<Offset>(
+        begin: const Offset(1, 0),
+        end: Offset(0, 0),
+      ).animate(animation),
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 5),
         height: type == Type.incomplete ? 85 : 60,
