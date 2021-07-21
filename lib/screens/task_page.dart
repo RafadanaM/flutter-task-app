@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tasks_app/config/enums.dart';
+
+import 'package:tasks_app/widgets/header.dart';
 import 'package:tasks_app/widgets/task_list_view.dart';
 import 'package:tasks_app/config/styles.dart';
 
@@ -20,13 +22,7 @@ class TaskPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text(
-              'My Tasks',
-              style: TextStyle(
-                fontSize: 36.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            Header(title: 'My Tasks'),
             Expanded(
               child: TaskListView(
                 type: Type.incomplete,

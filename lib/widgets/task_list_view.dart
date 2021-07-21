@@ -31,39 +31,40 @@ class TaskListView extends StatelessWidget {
           } else {
             if (snapshot.connectionState == ConnectionState.done) {
               return Consumer<TaskProvider>(
-                  child: Center(child: Text("No Tasks")),
-                  builder: (context, taskProvider, child) =>
-                      type == Type.complete &&
-                                  taskProvider.taskCompletedCount <= 0 ||
-                              type == Type.incomplete &&
-                                  taskProvider.taskIncompleteCount <= 0
-                          ? child
-                          : AnimatedList(
-                              key: _listKey,
-                              padding: EdgeInsets.symmetric(vertical: 22),
-                              itemBuilder: (BuildContext context, int index,
-                                  Animation<double> animation) {
-                                Task task = snapshot.data[index];
-                                print(task.title);
-                                return TaskListTile(
-                                  task: task,
-                                  animation: animation,
-                                  type: type,
-                                  onChanged: type == Type.incomplete
-                                      ? (bool newVal) =>
-                                          _completeTask(index, task, context)
-                                      : (bool newVal) {},
-                                  onTap: () {
-                                    Navigator.pushNamed(
-                                      context,
-                                      AddTaskScreen.routeName,
-                                      arguments: task,
-                                    );
-                                  },
-                                );
-                              },
-                              initialItemCount: snapshot.data.length,
-                            ));
+                child: Center(child: Text("No Tasks")),
+                builder: (context, taskProvider, child) =>
+                    type == Type.complete &&
+                                taskProvider.taskCompletedCount <= 0 ||
+                            type == Type.incomplete &&
+                                taskProvider.taskIncompleteCount <= 0
+                        ? child
+                        : AnimatedList(
+                            key: _listKey,
+                            padding: EdgeInsets.symmetric(vertical: 22),
+                            itemBuilder: (BuildContext context, int index,
+                                Animation<double> animation) {
+                              Task task = snapshot.data[index];
+                              print(task.title);
+                              return TaskListTile(
+                                task: task,
+                                animation: animation,
+                                type: type,
+                                onChanged: type == Type.incomplete
+                                    ? (bool newVal) =>
+                                        _completeTask(index, task, context)
+                                    : (bool newVal) {},
+                                onTap: () {
+                                  Navigator.pushNamed(
+                                    context,
+                                    AddTaskScreen.routeName,
+                                    arguments: task,
+                                  );
+                                },
+                              );
+                            },
+                            initialItemCount: snapshot.data.length,
+                          ),
+              );
             }
           }
           return Container(

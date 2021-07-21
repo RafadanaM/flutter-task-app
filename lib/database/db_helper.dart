@@ -155,6 +155,8 @@ class DBHelper {
         await db.rawQuery('SELECT COUNT(*) FROM tasks'));
   }
 
+  // Groceries
+
   //insert to database
   Future<void> insertGrocery(Grocery grocery) async {
     final Database db = await database;
@@ -178,6 +180,30 @@ class DBHelper {
       where: 'id = ?',
       whereArgs: [id],
     );
+  }
+
+  Future<void> deleteAllGrocery() async {
+    final Database db = await database;
+
+    await db.delete(
+      'groceries',
+    );
+  }
+
+  Future<void> deleteCompletedGrocery(bool isCompleted) async {
+    final Database db = await database;
+
+    await db.delete(
+      'groceries',
+      where: 'isCompleted = ?',
+      whereArgs: [isCompleted ? 1 : 0],
+    );
+  }
+
+  Future<void> uncheckAllGroceries() async {
+    final Database db = await database;
+
+    await db.update('groceries', {'isCompleted': 0});
   }
 
   //get from database

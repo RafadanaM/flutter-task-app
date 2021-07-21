@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tasks_app/models/grocery_provider.dart';
 
 import 'package:tasks_app/models/task_provider.dart';
 import 'package:tasks_app/screens/add_task_screen.dart';
@@ -21,11 +22,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => TaskProvider(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<TaskProvider>(create: (_) => TaskProvider()),
+        ChangeNotifierProvider<GroceryProvider>(
+            create: (_) => GroceryProvider()),
+      ],
       child: MaterialApp(
         title: 'Task App',
-
         initialRoute: HomePage.routeName,
         onGenerateRoute: (RouteSettings settings) {
           var routes = <String, WidgetBuilder>{
@@ -57,7 +61,7 @@ class _HomePageState extends State<HomePage> {
   PageController _pageController = PageController();
 
   int _selectedIndex = 0;
-  List<StatelessWidget> _pages;
+  List<Widget> _pages;
 
   void _onPageChanged(int index) {
     setState(() {

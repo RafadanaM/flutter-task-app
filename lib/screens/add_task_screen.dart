@@ -12,6 +12,7 @@ import 'package:tasks_app/widgets/ErrorDialog.dart';
 import 'package:tasks_app/widgets/clickable_icon.dart';
 import 'package:intl/intl.dart';
 import 'package:tasks_app/main.dart';
+
 import 'package:tasks_app/widgets/confirm_dialog.dart';
 import 'package:tasks_app/widgets/reminder_picker.dart';
 
