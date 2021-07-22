@@ -37,7 +37,10 @@ class TaskProvider extends ChangeNotifier {
     DBHelper().insertTask(task);
   }
 
+
+
   void completeTask(Task task) {
+    print(task.isCompleted);
     _incompleteTasks.removeWhere((element) => element.id == task.id);
     _completedTasks.add(task);
     //_tasks[_tasks.indexWhere((element) => element.id == task.id)] = task;
@@ -65,4 +68,6 @@ class TaskProvider extends ChangeNotifier {
     notifyListeners();
     DBHelper().updateTask(task);
   }
+
+
 }
