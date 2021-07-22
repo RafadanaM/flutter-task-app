@@ -5,6 +5,7 @@ import 'package:tasks_app/config/enums.dart';
 import 'package:tasks_app/models/task.dart';
 import 'package:tasks_app/models/task_provider.dart';
 import 'package:tasks_app/screens/add_task_screen.dart';
+import 'package:tasks_app/widgets/custom_snack_bar.dart';
 import 'package:tasks_app/widgets/task_list_tile.dart';
 import 'package:provider/provider.dart';
 
@@ -74,13 +75,23 @@ class TaskListView extends StatelessWidget {
         });
   }
 
-  _completeTask(int index, Task task, BuildContext context) async {
+  _completeTask(int index, Task task, BuildContext context) {
     task.toggleCompleted();
-    Provider.of<TaskProvider>(context, listen: false).completeTask(task);
 
+    Provider.of<TaskProvider>(context, listen: false).completeTask(task);
     _listKey.currentState.removeItem(index,
         (context, animation) => _removeItemBuilder(task, context, animation),
         duration: Duration(milliseconds: 500));
+
+    ScaffoldMessenger.of(context).showSnackBar(undoSnackBar(
+      () {
+        task.toggleCompleted();
+        Provider.of<TaskProvider>(context, listen: false)
+            .undoCompleteTask(task);
+        _listKey.currentState
+            .insertItem(index, duration: Duration(milliseconds: 500));
+      },
+    ));
   }
 
   Widget _removeItemBuilder(

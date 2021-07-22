@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:tasks_app/config/enums.dart';
 import 'package:tasks_app/database/db_helper.dart';
 import 'package:tasks_app/models/task.dart';
 
@@ -37,10 +38,16 @@ class TaskProvider extends ChangeNotifier {
   }
 
   void completeTask(Task task) {
-    print(task.isCompleted);
     _incompleteTasks.removeWhere((element) => element.id == task.id);
     _completedTasks.add(task);
     //_tasks[_tasks.indexWhere((element) => element.id == task.id)] = task;
+    notifyListeners();
+    DBHelper().completeTask(task);
+  }
+
+  void undoCompleteTask(Task task) {
+    _completedTasks.removeWhere((element) => element.id == task.id);
+    _incompleteTasks.add(task);
     notifyListeners();
     DBHelper().completeTask(task);
   }
