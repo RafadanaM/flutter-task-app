@@ -71,7 +71,7 @@ class DBHelper {
     final Database db = await database;
 
     final List<Map<String, dynamic>> maps =
-        await db.query('tasks', orderBy: 'date DESC');
+        await db.query('tasks', orderBy: 'date ASC');
     return List.generate(maps.length, (index) {
       return Task(
         id: maps[index]['id'],

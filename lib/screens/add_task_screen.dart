@@ -7,8 +7,8 @@ import 'package:tasks_app/config/reminder.dart';
 import 'package:tasks_app/config/styles.dart';
 import 'package:tasks_app/models/task.dart';
 import 'package:tasks_app/models/task_provider.dart';
-import 'package:tasks_app/widgets/CustomSnackBar.dart';
-import 'package:tasks_app/widgets/ErrorDialog.dart';
+import 'package:tasks_app/widgets/custom_snack_bar.dart';
+import 'package:tasks_app/widgets/error_dialog.dart';
 import 'package:tasks_app/widgets/clickable_icon.dart';
 import 'package:intl/intl.dart';
 import 'package:tasks_app/main.dart';
@@ -390,7 +390,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   }
 
   _calculateReminder(ReminderType reminderType, int reminderValue) {
-    if (reminderType != null || reminderValue != null) {
+    if (reminderType != null && reminderValue != null) {
       if (reminderValue == 0) {
         setState(() {
           _reminder = null;
@@ -409,12 +409,18 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
           reminder = _inputDateTime.subtract(Duration(days: reminderValue));
           break;
         default:
-          return;
+          reminder = null;
+          break;
       }
+      print(reminder);
       setState(() {
         _reminder = reminder;
       });
+      return;
     }
+    setState(() {
+      _reminder = null;
+    });
   }
 
   Future<void> _showAlertDialog() async {
@@ -444,7 +450,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   }
 
   // TODO make sure that Title exists and check for input time against current time
-  _submit() async {
+  _submit() {
     _calculateReminder(_reminderType, _reminderValue);
 
     if (titleController.text.isEmpty) {
@@ -458,9 +464,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     }
 
     if (_reminder != null && _reminder.isBefore(DateTime.now())) {
-      ScaffoldMessenger.of(context).showSnackBar(CustomSnackBar(
-          text:
-              "Reminder is set before current time. No notification will be shown"));
+      ScaffoldMessenger.of(context).showSnackBar(reminderSnackBar());
     }
 
     Task newTask = Task(
