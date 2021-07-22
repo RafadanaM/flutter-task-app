@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:tasks_app/config/enums.dart';
 import 'package:tasks_app/models/task.dart';
@@ -77,7 +75,6 @@ class TaskListView extends StatelessWidget {
 
   _completeTask(int index, Task task, BuildContext context) {
     task.toggleCompleted();
-
     Provider.of<TaskProvider>(context, listen: false).completeTask(task);
     _listKey.currentState.removeItem(index,
         (context, animation) => _removeItemBuilder(task, context, animation),
