@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tasks_app/config/styles.dart';
 
 class ConfirmDialog extends StatelessWidget {
   final String title;
@@ -19,21 +20,41 @@ class ConfirmDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(title),
-      content: SingleChildScrollView(
-        child: Text(content),
+      title: Text(
+        title,
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          color: backgroundPrimary
+        ),
       ),
+      content: SingleChildScrollView(
+        child: Text(
+          content,
+          style: TextStyle(color: backgroundPrimary),
+        ),
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      backgroundColor: darkerGreen,
       actions: <Widget>[
         TextButton(
           onPressed: () => onPressedCancel,
           //Navigator.pop(context)
-          child: Text(cancelText),
+          child: Text(
+            cancelText,
+            style: TextStyle(color: backgroundPrimary),
+          ),
         ),
         TextButton(
           onPressed: onPressedConfirm,
-          child: Text(confirmText),
+          child: Text(
+            confirmText,
+            style: TextStyle(color: orange),
+          ),
         ),
       ],
+      actionsPadding: EdgeInsets.only(right: 8),
     );
   }
 }

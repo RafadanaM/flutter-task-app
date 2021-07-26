@@ -1,30 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:tasks_app/config/styles.dart';
 
-SnackBar undoSnackBar(Function onPressed) {
+SnackBar undoSnackBar(Function onPressed, BuildContext context) {
   return SnackBar(
-    content: Text("Task has been completed"),
+    content: Container(
+      width: MediaQuery.of(context).size.width * 0.85,
+      child: Text("Task has been completed"),
+    ),
     action: SnackBarAction(
       label: 'Undo',
+      textColor: orange,
       onPressed: onPressed,
     ),
-    width: 280,
-    padding: const EdgeInsets.all(8),
+    padding: const EdgeInsets.only(
+      left: 12,
+    ),
     behavior: SnackBarBehavior.floating,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(5.0),
     ),
+    backgroundColor: grey.withOpacity(0.9),
   );
 }
 
-SnackBar reminderSnackBar() {
+SnackBar reminderSnackBar(BuildContext context) {
   return SnackBar(
-    content: Text(
-        "Reminder is set before current time. No notification will be shown"),
-    width: 280,
-    padding: const EdgeInsets.all(8),
+    content: Container(
+      width: MediaQuery.of(context).size.width * 0.85,
+      child: Text("Reminder is set before current time. No notification will be shown"),
+    ),
+    padding: const EdgeInsets.symmetric(
+      horizontal: 12,
+    ),
     behavior: SnackBarBehavior.floating,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(5.0),
     ),
+    backgroundColor: grey.withOpacity(0.9),
   );
 }

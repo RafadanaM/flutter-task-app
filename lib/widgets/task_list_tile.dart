@@ -4,6 +4,8 @@ import 'package:tasks_app/config/styles.dart';
 import 'package:tasks_app/config/enums.dart';
 import 'package:tasks_app/models/task.dart';
 
+import 'custom_checkbox.dart';
+
 class TaskListTile extends StatelessWidget {
   final Task task;
   final Type type;
@@ -73,18 +75,9 @@ class TaskListTile extends StatelessWidget {
                 : null,
             isThreeLine: type == Type.incomplete,
             onTap: onTap,
-            trailing: Transform.scale(
-              scale: 1.4,
-              child: Checkbox(
-                key: ValueKey(task.id),
-                //No size option???? Really Flutter???
-                shape: CircleBorder(),
-                side: BorderSide(color: lightGreen),
+            trailing: CustomCheckbox(
                 value: task.isCompleted,
                 onChanged: task.isCompleted ? (newValue) {} : onChanged,
-                activeColor: lightGreen,
-                checkColor: darkGreen,
-              ),
             ),
           ),
         ),

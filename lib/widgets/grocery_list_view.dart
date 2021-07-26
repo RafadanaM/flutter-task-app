@@ -8,6 +8,7 @@ import 'package:tasks_app/database/db_helper.dart';
 import 'package:tasks_app/models/grocery.dart';
 import 'package:provider/provider.dart';
 import 'package:tasks_app/models/grocery_provider.dart';
+import 'package:tasks_app/widgets/custom_checkbox.dart';
 
 class GroceryListView extends StatefulWidget {
   @override
@@ -15,7 +16,6 @@ class GroceryListView extends StatefulWidget {
 }
 
 class _GroceryListViewState extends State<GroceryListView> {
-  final DateFormat formatter = DateFormat('dd MMMM yyyy');
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -30,7 +30,16 @@ class _GroceryListViewState extends State<GroceryListView> {
           } else {
             if (snapshot.connectionState == ConnectionState.done) {
               return Consumer<GroceryProvider>(
-                  child: Center(child: Text("No Groceries")),
+                  child: Center(
+                    child: Text(
+                      "No groceries added yet.",
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: lightGreen,
+                      ),
+                    )
+                  ),
                   builder: (context, groceryProvider, child) => groceryProvider
                               .groceriesCount <=
                           0
@@ -53,7 +62,7 @@ class _GroceryListViewState extends State<GroceryListView> {
                               return Container(
                                   height: 50,
                                   padding: EdgeInsets.symmetric(
-                                    horizontal: 10.0,
+                                    horizontal: 8.0,
                                   ),
                                   child: Row(
                                     mainAxisAlignment:
@@ -66,34 +75,27 @@ class _GroceryListViewState extends State<GroceryListView> {
                                               snapshot.data[index].isCompleted
                                                   ? TextDecoration.lineThrough
                                                   : null,
-                                          color: darkGreen,
-                                          fontSize: 24,
+                                          decorationThickness: 3.0,
+                                          color: snapshot.data[index].isCompleted
+                                                  ? lightGreen
+                                                  : darkGreen,
+                                          fontSize: 20,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                      Theme(
-                                          data: ThemeData(
-                                              unselectedWidgetColor:
-                                                  lightGreen),
-                                          child: RoundCheckBox(
-                                            checkedColor: darkGreen,
-                                            uncheckedColor: backgroundPrimary,
+                                      CustomCheckbox(
+                                            checkColor: backgroundPrimary,
+                                            activeColor: darkGreen,
                                             borderColor: darkGreen,
-                                            size: 28,
-                                            isChecked: snapshot
+                                            value: snapshot
                                                 .data[index].isCompleted,
-                                            checkedWidget: Icon(
-                                              Icons.check,
-                                              size: 20,
-                                              color: backgroundPrimary,
-                                            ),
-                                            onTap: (value) =>
+                                            onChanged: (value) =>
                                                 Provider.of<GroceryProvider>(
                                                         context,
                                                         listen: false)
                                                     .completeGrocery(
                                                         snapshot.data[index]),
-                                          )),
+                                          ),
                                     ],
                                   ));
                             }

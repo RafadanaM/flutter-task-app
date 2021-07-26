@@ -4,7 +4,6 @@ import 'package:tasks_app/config/styles.dart';
 import 'package:tasks_app/database/db_helper.dart';
 import 'package:tasks_app/models/grocery.dart';
 import 'package:tasks_app/models/grocery_provider.dart';
-import 'package:tasks_app/widgets/clickable_icon.dart';
 import 'package:tasks_app/widgets/grocery_list_view.dart';
 import 'package:tasks_app/widgets/header.dart';
 

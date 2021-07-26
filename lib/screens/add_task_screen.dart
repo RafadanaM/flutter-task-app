@@ -464,7 +464,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     }
 
     if (_reminder != null && _reminder.isBefore(DateTime.now())) {
-      ScaffoldMessenger.of(context).showSnackBar(reminderSnackBar());
+      ScaffoldMessenger.of(context).showSnackBar(reminderSnackBar(context));
     }
 
     Task newTask = Task(

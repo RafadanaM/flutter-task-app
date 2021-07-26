@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tasks_app/config/enums.dart';
+import 'package:tasks_app/config/styles.dart';
 import 'package:tasks_app/models/task.dart';
 import 'package:tasks_app/models/task_provider.dart';
 import 'package:tasks_app/screens/add_task_screen.dart';
@@ -30,7 +31,16 @@ class TaskListView extends StatelessWidget {
           } else {
             if (snapshot.connectionState == ConnectionState.done) {
               return Consumer<TaskProvider>(
-                child: Center(child: Text("No Tasks")),
+                child: Center(
+                  child: Text(
+                    "No tasks added yet.",
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: lightGreen,
+                    ),
+                  )
+                ),
                 builder: (context, taskProvider, child) =>
                     type == Type.complete &&
                                 taskProvider.taskCompletedCount <= 0 ||
@@ -87,7 +97,7 @@ class TaskListView extends StatelessWidget {
             .undoCompleteTask(task);
         _listKey.currentState
             .insertItem(index, duration: Duration(milliseconds: 500));
-      },
+      }, context
     ));
   }
 
